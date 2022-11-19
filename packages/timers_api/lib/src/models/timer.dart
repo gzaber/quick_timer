@@ -5,9 +5,10 @@ import 'models.dart';
 
 class Timer extends Equatable {
   Timer({
+    String? id,
     required this.name,
     required this.interval,
-  }) : id = Uuid().v4();
+  }) : id = id ?? Uuid().v4();
 
   final String id;
   final Name name;
