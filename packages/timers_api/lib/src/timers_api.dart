@@ -1,6 +1,13 @@
-// TODO: Put public facing types in this file.
+import 'models/models.dart';
 
-/// Checks if you are awesome. Spoiler: you are.
-class Awesome {
-  bool get isAwesome => true;
+abstract class TimersApi {
+  void createName(String name);
+  void deleteName(String id);
+  List<Name> readNames();
+  void createInterval(Duration interval);
+  void deleteInterval(String id);
+  List<Interval> readIntervals();
+  void createTimer(Name name, Interval interval);
+  void deleteTimer(String id);
+  List<Timer> readTimers();
 }
