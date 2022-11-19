@@ -1,0 +1,14 @@
+name: timers_api
+description: An abstract class and models for an API providing access to timers.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=2.18.4 <3.0.0"
+
+# dependencies:
+#   path: ^1.8.0
+
+dev_dependencies:
+  lints: ^2.0.0
+  test: ^1.16.0
