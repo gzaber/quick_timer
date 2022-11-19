@@ -1,0 +1,14 @@
+{
+  "files.exclude": {
+    ".dart_tool": true,
+    ".idea": true,
+    ".metadata": true,
+    "pubspec.lock": true,
+    "quick_timer.iml": true
+  },
+  "editor.formatOnSave": true,
+  "editor.rulers": [
+    80
+  ],
+  "dart.lineLength": 80
+}
