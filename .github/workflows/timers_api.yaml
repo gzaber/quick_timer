@@ -2,7 +2,7 @@ name: timers_api
 on:
   pull_request:
     paths:
-      - packages/timers_api
+      - "packages/timers_api/**"
 
 jobs:
   dart_test:
