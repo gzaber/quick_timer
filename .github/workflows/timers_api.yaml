@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - "packages/timers_api/**"
+      - ".github/workflows/timers_api.yaml"
 
 jobs:
   dart_test:
@@ -11,7 +12,7 @@ jobs:
         working-directory: packages/timers_api
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: dart-lang/setup-dart@v1.3
 
       - name: Install dependencies
