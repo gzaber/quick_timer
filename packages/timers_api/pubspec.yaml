@@ -8,11 +8,8 @@ environment:
 
 dependencies:
   equatable: ^2.0.5
-  json_annotation: ^4.7.0
   uuid: ^3.0.7
 
 dev_dependencies:
-  build_runner: ^2.3.2
-  json_serializable: ^6.5.4
   lints: ^2.0.0
   test: ^1.16.0
