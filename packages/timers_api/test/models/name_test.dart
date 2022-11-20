@@ -3,12 +3,16 @@ import 'package:timers_api/src/models/models.dart';
 
 void main() {
   group('Name', () {
-    const id = 'id';
-    const name = 'name';
+    final id = 'id';
+    final name = 'name';
 
     group('constructor', () {
       test('works properly', () {
-        expect(() => Name(id: id, name: name), returnsNormally);
+        expect(() => Name(name: name), returnsNormally);
+      });
+
+      test('sets id if not provided', () {
+        expect(Name(name: name).id, isNotEmpty);
       });
     });
 
@@ -20,8 +24,10 @@ void main() {
     });
 
     test('props are correct', () {
-      const interval = Name(id: id, name: name);
-      expect(interval.props, equals(['id', 'name']));
+      expect(
+        Name(id: id, name: name).props,
+        equals(['id', 'name']),
+      );
     });
   });
 }
