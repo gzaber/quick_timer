@@ -29,5 +29,29 @@ void main() {
         equals(['id', 'name']),
       );
     });
+
+    group('fromJson', () {
+      test('works correctly', () {
+        expect(
+          Name.fromJson({
+            "id": id,
+            "name": name,
+          }),
+          equals(Name(id: id, name: name)),
+        );
+      });
+    });
+
+    group('toJson', () {
+      test('works correctly', () {
+        expect(
+          Name(id: id, name: name).toJson(),
+          equals({
+            "id": id,
+            "name": name,
+          }),
+        );
+      });
+    });
   });
 }

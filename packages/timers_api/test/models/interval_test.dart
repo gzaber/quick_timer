@@ -29,5 +29,29 @@ void main() {
         equals(['id', 10]),
       );
     });
+
+    group('fromJson', () {
+      test('works correctly', () {
+        expect(
+          Interval.fromJson({
+            "id": id,
+            "minutes": minutes,
+          }),
+          equals(Interval(id: id, minutes: minutes)),
+        );
+      });
+    });
+
+    group('toJson', () {
+      test('works correctly', () {
+        expect(
+          Interval(id: id, minutes: minutes).toJson(),
+          equals({
+            "id": id,
+            "minutes": minutes,
+          }),
+        );
+      });
+    });
   });
 }

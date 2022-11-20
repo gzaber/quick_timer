@@ -9,12 +9,12 @@ void main() {
 
     group('constructor', () {
       test('works properly', () {
-        expect(() => Timer(name: name, interval: interval), returnsNormally);
+        expect(() => Timer(interval: interval, name: name), returnsNormally);
       });
 
       test('sets id if not provided', () {
         expect(
-          Timer(name: name, interval: interval).id,
+          Timer(interval: interval, name: name).id,
           isNotEmpty,
         );
       });
@@ -22,19 +22,57 @@ void main() {
 
     test('supports value equality', () {
       expect(
-        Timer(id: id, name: name, interval: interval),
-        equals(Timer(id: id, name: name, interval: interval)),
+        Timer(id: id, interval: interval, name: name),
+        equals(Timer(id: id, interval: interval, name: name)),
       );
     });
 
     test('props are correct', () {
       expect(
-          Timer(id: id, name: name, interval: interval).props,
+          Timer(id: id, interval: interval, name: name).props,
           equals([
             'id',
             Name(id: 'nameId', name: 'name'),
             Interval(id: 'intervalId', minutes: 10),
           ]));
+    });
+
+    group('fromJson', () {
+      test('works correctly', () {
+        expect(
+          Timer.fromJson({
+            "id": id,
+            "interval": {
+              "id": "intervalId",
+              "minutes": 10,
+            },
+            "name": {
+              "id": "nameId",
+              "name": "name",
+            }
+          }),
+          equals(Timer(id: id, interval: interval, name: name)),
+        );
+      });
+    });
+
+    group('toJson', () {
+      test('works correctly', () {
+        expect(
+          Timer(id: id, interval: interval, name: name).toJson(),
+          equals({
+            "id": id,
+            "interval": {
+              "id": "intervalId",
+              "minutes": 10,
+            },
+            "name": {
+              "id": "nameId",
+              "name": "name",
+            }
+          }),
+        );
+      });
     });
   });
 }
