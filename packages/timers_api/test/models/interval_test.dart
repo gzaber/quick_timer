@@ -3,25 +3,31 @@ import 'package:timers_api/src/models/models.dart';
 
 void main() {
   group('Interval', () {
-    const id = 'id';
-    const duration = Duration(minutes: 10);
+    final id = 'id';
+    final minutes = 10;
 
     group('constructor', () {
       test('works properly', () {
-        expect(() => Interval(id: id, duration: duration), returnsNormally);
+        expect(() => Interval(minutes: minutes), returnsNormally);
+      });
+
+      test('sets id if not provided', () {
+        expect(Interval(minutes: 10).id, isNotEmpty);
       });
     });
 
     test('supports value equality', () {
       expect(
-        Interval(id: id, duration: duration),
-        equals(Interval(id: id, duration: duration)),
+        Interval(id: id, minutes: minutes),
+        equals(Interval(id: id, minutes: minutes)),
       );
     });
 
     test('props are correct', () {
-      const interval = Interval(id: id, duration: duration);
-      expect(interval.props, equals(['id', Duration(minutes: 10)]));
+      expect(
+        Interval(id: id, minutes: minutes).props,
+        equals(['id', 10]),
+      );
     });
   });
 }

@@ -1,14 +1,15 @@
 import 'package:equatable/equatable.dart';
+import 'package:uuid/uuid.dart';
 
 class Interval extends Equatable {
-  const Interval({
-    required this.id,
-    required this.duration,
-  });
+  Interval({
+    String? id,
+    required this.minutes,
+  }) : id = id ?? Uuid().v4();
 
   final String id;
-  final Duration duration;
+  final int minutes;
 
   @override
-  List<Object?> get props => [id, duration];
+  List<Object?> get props => [id, minutes];
 }

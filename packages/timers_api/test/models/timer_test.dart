@@ -3,14 +3,20 @@ import 'package:timers_api/src/models/models.dart';
 
 void main() {
   group('Timer', () {
-    const id = 'id';
-    const name = Name(id: 'nameId', name: 'name');
-    const interval =
-        Interval(id: 'intervalId', duration: Duration(minutes: 10));
+    final id = 'id';
+    final name = Name(id: 'nameId', name: 'name');
+    final interval = Interval(id: 'intervalId', minutes: 10);
+
     group('constructor', () {
       test('works properly', () {
-        expect(() => Timer(id: id, name: name, interval: interval),
-            returnsNormally);
+        expect(() => Timer(name: name, interval: interval), returnsNormally);
+      });
+
+      test('sets id if not provided', () {
+        expect(
+          Timer(name: name, interval: interval).id,
+          isNotEmpty,
+        );
       });
     });
 
@@ -22,13 +28,12 @@ void main() {
     });
 
     test('props are correct', () {
-      const timer = Timer(id: id, name: name, interval: interval);
       expect(
-          timer.props,
+          Timer(id: id, name: name, interval: interval).props,
           equals([
             'id',
             Name(id: 'nameId', name: 'name'),
-            Interval(id: 'intervalId', duration: Duration(minutes: 10)),
+            Interval(id: 'intervalId', minutes: 10),
           ]));
     });
   });

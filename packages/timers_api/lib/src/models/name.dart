@@ -1,10 +1,11 @@
 import 'package:equatable/equatable.dart';
+import 'package:uuid/uuid.dart';
 
 class Name extends Equatable {
-  const Name({
-    required this.id,
+  Name({
+    String? id,
     required this.name,
-  });
+  }) : id = id ?? Uuid().v4();
 
   final String id;
   final String name;
