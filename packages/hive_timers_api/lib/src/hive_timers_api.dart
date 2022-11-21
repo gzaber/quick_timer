@@ -4,63 +4,70 @@ import 'package:timers_api/timers_api.dart';
 class HiveTimersApi implements TimersApi {
   HiveTimersApi._(this._intervalsBox, this._namesBox, this._timersBox);
 
-  final Box<int> _intervalsBox;
-  final Box<String> _namesBox;
-  final Box<Map> _timersBox;
+  final Box<Map<String, dynamic>> _intervalsBox;
+  final Box<Map<String, dynamic>> _namesBox;
+  final Box<Map<String, dynamic>> _timersBox;
 
   static Future<HiveTimersApi> init(HiveInterface hive) async {
-    final intervalsBox = await hive.openBox<int>('intervals');
-    final namesBox = await hive.openBox<String>('names');
-    final timersBox = await hive.openBox<Map>('timers');
+    final intervalsBox = await hive.openBox<Map<String, dynamic>>('intervals');
+    final namesBox = await hive.openBox<Map<String, dynamic>>('names');
+    final timersBox = await hive.openBox<Map<String, dynamic>>('timers');
 
     return HiveTimersApi._(intervalsBox, namesBox, timersBox);
   }
 
   @override
-  void createInterval(interval) {
-    // TODO: implement createInterval
+  Future<void> createInterval(int minutes) async {
+    final interval = Interval(minutes: minutes);
+    await _intervalsBox.put(interval.id, interval.toJson());
   }
 
   @override
-  void createName(String name) {
-    // TODO: implement createName
+  Future<void> createName(String timerName) async {
+    final name = Name(name: timerName);
+    await _namesBox.put(name.id, name.toJson());
   }
 
   @override
-  void createTimer(Name name, Interval interval) {
-    // TODO: implement createTimer
+  Future<void> createTimer(Interval interval, Name name) async {
+    final timer = Timer(interval: interval, name: name);
+    await _timersBox.put(timer.id, timer.toJson());
   }
 
   @override
-  void deleteInterval(String id) {
-    // TODO: implement deleteInterval
+  Future<void> deleteInterval(String id) async {
+    await _intervalsBox.delete(id);
   }
 
   @override
-  void deleteName(String id) {
-    // TODO: implement deleteName
+  Future<void> deleteName(String id) async {
+    await _namesBox.delete(id);
   }
 
   @override
-  void deleteTimer(String id) {
-    // TODO: implement deleteTimer
+  Future<void> deleteTimer(String id) async {
+    await _timersBox.delete(id);
   }
 
   @override
   List<Interval> readIntervals() {
-    // TODO: implement readIntervals
-    throw UnimplementedError();
+    final intervals = _intervalsBox.values
+        .map((intervalMap) => Interval.fromJson(intervalMap))
+        .toList();
+    return intervals;
   }
 
   @override
   List<Name> readNames() {
-    // TODO: implement readNames
-    throw UnimplementedError();
+    final names =
+        _namesBox.values.map((nameMap) => Name.fromJson(nameMap)).toList();
+    return names;
   }
 
   @override
   List<Timer> readTimers() {
-    // TODO: implement readTimers
-    throw UnimplementedError();
+    final timers =
+        _timersBox.values.map((timerMap) => Timer.fromJson(timerMap)).toList();
+    return timers;
   }
 }
