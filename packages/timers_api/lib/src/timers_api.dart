@@ -1,13 +1,13 @@
 import 'models/models.dart';
 
 abstract class TimersApi {
-  void createName(String name);
-  void deleteName(String id);
-  List<Name> readNames();
-  void createInterval(int minutes);
-  void deleteInterval(String id);
-  List<Interval> readIntervals();
-  void createTimer(Interval interval, Name name);
-  void deleteTimer(String id);
-  List<Timer> readTimers();
+  Future<void> createName(String name);
+  Future<void> deleteName(String id);
+  Future<List<Name>> readNames();
+  Future<void> createInterval(int minutes);
+  Future<void> deleteInterval(String id);
+  Future<List<Interval>> readIntervals();
+  Future<void> createTimer(Interval interval, Name name);
+  Future<void> deleteTimer(String id);
+  Future<List<Timer>> readTimers();
 }

@@ -50,24 +50,24 @@ class HiveTimersApi implements TimersApi {
   }
 
   @override
-  List<Interval> readIntervals() {
+  Future<List<Interval>> readIntervals() {
     final intervals = _intervalsBox.values
         .map((intervalMap) => Interval.fromJson(intervalMap))
         .toList();
-    return intervals;
+    return Future.value(intervals);
   }
 
   @override
-  List<Name> readNames() {
+  Future<List<Name>> readNames() {
     final names =
         _namesBox.values.map((nameMap) => Name.fromJson(nameMap)).toList();
-    return names;
+    return Future.value(names);
   }
 
   @override
-  List<Timer> readTimers() {
+  Future<List<Timer>> readTimers() {
     final timers =
         _timersBox.values.map((timerMap) => Timer.fromJson(timerMap)).toList();
-    return timers;
+    return Future.value(timers);
   }
 }

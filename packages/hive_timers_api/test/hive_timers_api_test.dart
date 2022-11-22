@@ -111,35 +111,35 @@ void main() {
     });
 
     group('readIntervals', () {
-      test('reads all intervals', () {
+      test('reads all intervals', () async {
         final interval1 = Interval(minutes: 10);
         final interval2 = Interval(minutes: 20);
         when(() => mockBox.values.toList())
             .thenAnswer((_) => [interval1.toJson(), interval2.toJson()]);
 
-        expect(hiveTimersApi.readIntervals(), [interval1, interval2]);
+        expect(await hiveTimersApi.readIntervals(), [interval1, interval2]);
       });
       test('returns empty list when no intervals found', () async {
         when(() => mockBox.values.toList()).thenAnswer((_) => []);
 
-        expect(hiveTimersApi.readIntervals(), []);
+        expect(await hiveTimersApi.readIntervals(), []);
       });
     });
 
     group('readNames', () {
-      test('read all names', () {
+      test('read all names', () async {
         final name1 = Name(name: 'name1');
         final name2 = Name(name: 'name2');
         when(() => mockBox.values.toList())
             .thenAnswer((_) => [name1.toJson(), name2.toJson()]);
 
-        expect(hiveTimersApi.readNames(), [name1, name2]);
+        expect(await hiveTimersApi.readNames(), [name1, name2]);
       });
 
       test('returns empty list when no names found', () async {
         when(() => mockBox.values.toList()).thenAnswer((_) => []);
 
-        expect(hiveTimersApi.readNames(), []);
+        expect(await hiveTimersApi.readNames(), []);
       });
     });
 
@@ -156,7 +156,7 @@ void main() {
       test('returns empty list when no timers found', () async {
         when(() => mockBox.values.toList()).thenAnswer((_) => []);
 
-        expect(hiveTimersApi.readTimers(), []);
+        expect(await hiveTimersApi.readTimers(), []);
       });
     });
   });
