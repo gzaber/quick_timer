@@ -1,0 +1,16 @@
+name: timers_repository
+description: A repository that handles timers requests.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=2.18.4 <3.0.0"
+
+dependencies:
+  timers_api:
+    path: ../timers_api
+
+dev_dependencies:
+  lints: ^2.0.0
+  mocktail: ^0.3.0
+  test: ^1.16.0
