@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_timers_api/hive_timers_api.dart';
+import 'package:timers_repository/timers_repository.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'app.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+void main() async {
+  await Hive.initFlutter();
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Quick Timer',
-      home: Container(),
-    );
-  }
+  final timersApi = await HiveTimersApi.init(Hive);
+  final timersRepository = TimersRepository(timersApi);
+
+  runApp(
+    App(timersRepository: timersRepository),
+  );
 }

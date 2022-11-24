@@ -7,8 +7,15 @@ environment:
   sdk: ">=2.18.4 <3.0.0"
 
 dependencies:
+  equatable: ^2.0.5
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.1
+  hive_flutter: ^1.1.0
+  hive_timers_api:
+    path: packages/hive_timers_api
+  timers_repository:
+    path: packages/timers_repository
 
 dev_dependencies:
   flutter_test:
