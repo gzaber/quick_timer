@@ -6,20 +6,19 @@ import 'package:timers_api/timers_api.dart';
 
 class MockHive extends Mock implements HiveInterface {}
 
-class MockBox extends Mock implements Box<Map<String, dynamic>> {}
+class MockBox extends Mock implements Box<Map> {}
 
 void main() {
   group('HiveTimersApi', () {
     late HiveInterface mockHive;
-    late Box<Map<String, dynamic>> mockBox;
+    late Box<Map> mockBox;
     late HiveTimersApi hiveTimersApi;
 
     setUp(() async {
       mockHive = MockHive();
       mockBox = MockBox();
 
-      when(() => mockHive.openBox<Map<String, dynamic>>(any()))
-          .thenAnswer((_) async => mockBox);
+      when(() => mockHive.openBox<Map>(any())).thenAnswer((_) async => mockBox);
 
       hiveTimersApi = await HiveTimersApi.init(mockHive);
     });
