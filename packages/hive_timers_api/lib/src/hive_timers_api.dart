@@ -4,14 +4,14 @@ import 'package:timers_api/timers_api.dart';
 class HiveTimersApi implements TimersApi {
   HiveTimersApi._(this._intervalsBox, this._namesBox, this._timersBox);
 
-  final Box<Map<String, dynamic>> _intervalsBox;
-  final Box<Map<String, dynamic>> _namesBox;
-  final Box<Map<String, dynamic>> _timersBox;
+  final Box<Map> _intervalsBox;
+  final Box<Map> _namesBox;
+  final Box<Map> _timersBox;
 
   static Future<HiveTimersApi> init(HiveInterface hive) async {
-    final intervalsBox = await hive.openBox<Map<String, dynamic>>('intervals');
-    final namesBox = await hive.openBox<Map<String, dynamic>>('names');
-    final timersBox = await hive.openBox<Map<String, dynamic>>('timers');
+    final intervalsBox = await hive.openBox<Map>('intervals');
+    final namesBox = await hive.openBox<Map>('names');
+    final timersBox = await hive.openBox<Map>('timers');
 
     return HiveTimersApi._(intervalsBox, namesBox, timersBox);
   }
@@ -52,22 +52,25 @@ class HiveTimersApi implements TimersApi {
   @override
   Future<List<Interval>> readIntervals() {
     final intervals = _intervalsBox.values
-        .map((intervalMap) => Interval.fromJson(intervalMap))
+        .map((intervalMap) =>
+            Interval.fromJson(intervalMap.cast<String, dynamic>()))
         .toList();
     return Future.value(intervals);
   }
 
   @override
   Future<List<Name>> readNames() {
-    final names =
-        _namesBox.values.map((nameMap) => Name.fromJson(nameMap)).toList();
+    final names = _namesBox.values
+        .map((nameMap) => Name.fromJson(nameMap.cast<String, dynamic>()))
+        .toList();
     return Future.value(names);
   }
 
   @override
   Future<List<Timer>> readTimers() {
-    final timers =
-        _timersBox.values.map((timerMap) => Timer.fromJson(timerMap)).toList();
+    final timers = _timersBox.values
+        .map((timerMap) => Timer.fromJson(timerMap.cast<String, dynamic>()))
+        .toList();
     return Future.value(timers);
   }
 }
