@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timers_repository/timers_repository.dart';
 
+import '../../new_timer/new_timer.dart';
 import '../timers_overview.dart';
 
 class TimersOverviewPage extends StatelessWidget {
@@ -59,7 +60,7 @@ class TimersOverviewView extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => Navigator.push(context, NewTimerPage.route()),
         child: const Icon(
           Icons.add,
         ),

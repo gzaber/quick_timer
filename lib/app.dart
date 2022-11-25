@@ -29,6 +29,11 @@ class AppView extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        appBarTheme: const AppBarTheme(
+          elevation: 0,
+          color: Colors.transparent,
+          titleSpacing: 0,
+        ),
         scaffoldBackgroundColor: const Color(0xFF020E35),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Color(0xFFFF82A1),
