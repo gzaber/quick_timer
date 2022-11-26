@@ -14,6 +14,9 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
         super(const NewTimerState()) {
     on<NewTimerLoadDataRequested>(_onLoadDataRequested);
     on<NewTimerIntervalAdded>(_onIntervalAdded);
+    on<NewTimerIntervalDeleted>(_onIntervalDeleted);
+    on<NewTimerNameAdded>(_onNameAdded);
+    on<NewTimerNameDeleted>(_onNameDeleted);
   }
 
   final TimersRepository _timersRepository;
@@ -23,12 +26,10 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(status: NewTimerStatus.loading));
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     try {
       final intervals = await _timersRepository.readIntervals();
-      print('before names');
       final names = await _timersRepository.readNames();
-      print('after names');
       emit(
         state.copyWith(
           status: NewTimerStatus.success,
@@ -38,7 +39,6 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
       );
     } catch (e) {
       emit(state.copyWith(status: NewTimerStatus.failure));
-      print(e.toString());
     }
   }
 
@@ -47,7 +47,7 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(status: NewTimerStatus.loading));
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
     try {
       await _timersRepository.createInterval(event.minutes);
       final intervals = await _timersRepository.readIntervals();
@@ -59,7 +59,66 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
       );
     } catch (e) {
       emit(state.copyWith(status: NewTimerStatus.failure));
-      print(e.toString());
+    }
+  }
+
+  Future<void> _onIntervalDeleted(
+    NewTimerIntervalDeleted event,
+    Emitter<NewTimerState> emit,
+  ) async {
+    emit(state.copyWith(status: NewTimerStatus.loading));
+    await Future.delayed(const Duration(seconds: 1));
+    try {
+      await _timersRepository.deleteInterval(event.interval.id);
+      final intervals = await _timersRepository.readIntervals();
+      emit(
+        state.copyWith(
+          status: NewTimerStatus.success,
+          intervals: intervals,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(status: NewTimerStatus.failure));
+    }
+  }
+
+  Future<void> _onNameAdded(
+    NewTimerNameAdded event,
+    Emitter<NewTimerState> emit,
+  ) async {
+    emit(state.copyWith(status: NewTimerStatus.loading));
+    await Future.delayed(const Duration(seconds: 1));
+    try {
+      await _timersRepository.createName(event.name);
+      final names = await _timersRepository.readNames();
+      emit(
+        state.copyWith(
+          status: NewTimerStatus.success,
+          names: names,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(status: NewTimerStatus.failure));
+    }
+  }
+
+  Future<void> _onNameDeleted(
+    NewTimerNameDeleted event,
+    Emitter<NewTimerState> emit,
+  ) async {
+    emit(state.copyWith(status: NewTimerStatus.loading));
+    await Future.delayed(const Duration(seconds: 1));
+    try {
+      await _timersRepository.deleteName(event.name.id);
+      final names = await _timersRepository.readNames();
+      emit(
+        state.copyWith(
+          status: NewTimerStatus.success,
+          names: names,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(status: NewTimerStatus.failure));
     }
   }
 }
