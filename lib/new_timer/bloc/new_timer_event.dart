@@ -30,7 +30,7 @@ class NewTimerIntervalDeleted extends NewTimerEvent {
 class NewTimerNameAdded extends NewTimerEvent {
   const NewTimerNameAdded({required this.name});
 
-  final Name name;
+  final String name;
 
   @override
   List<Object> get props => [name];
