@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timers_repository/timers_repository.dart';
 
 part 'new_timer_event.dart';
@@ -13,10 +12,13 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
       : _timersRepository = timersRepository,
         super(const NewTimerState()) {
     on<NewTimerLoadDataRequested>(_onLoadDataRequested);
-    on<NewTimerIntervalAdded>(_onIntervalAdded);
+    on<NewTimerCreated>(_onTimerCreated);
+    on<NewTimerIntervalCreated>(_onIntervalCreated);
     on<NewTimerIntervalDeleted>(_onIntervalDeleted);
-    on<NewTimerNameAdded>(_onNameAdded);
+    on<NewTimerIntervalSelected>(_onIntervalSelected);
+    on<NewTimerNameCreated>(_onNameCreated);
     on<NewTimerNameDeleted>(_onNameDeleted);
+    on<NewTimerNameSelected>(_onNameSelected);
   }
 
   final TimersRepository _timersRepository;
@@ -26,6 +28,7 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(status: NewTimerStatus.loading));
+    // TODO delete delay
     await Future.delayed(const Duration(seconds: 1));
     try {
       final intervals = await _timersRepository.readIntervals();
@@ -42,11 +45,33 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     }
   }
 
-  Future<void> _onIntervalAdded(
-    NewTimerIntervalAdded event,
+  Future<void> _onTimerCreated(
+    NewTimerCreated event,
+    Emitter<NewTimerState> emit,
+  ) async {
+    emit(state.copyWith(creationStatus: CreationStatus.loading));
+    // TODO delete delay
+    await Future.delayed(const Duration(seconds: 1));
+    if (state.selectedInterval == null || state.selectedName == null) {
+      emit(state.copyWith(creationStatus: CreationStatus.unselected));
+      emit(state.copyWith(creationStatus: CreationStatus.initial));
+      return;
+    }
+    try {
+      await _timersRepository.createTimer(
+          state.selectedInterval!, state.selectedName!);
+      emit(state.copyWith(creationStatus: CreationStatus.success));
+    } catch (e) {
+      emit(state.copyWith(creationStatus: CreationStatus.failure));
+    }
+  }
+
+  Future<void> _onIntervalCreated(
+    NewTimerIntervalCreated event,
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(status: NewTimerStatus.loading));
+    // TODO delete delay
     await Future.delayed(const Duration(seconds: 1));
     try {
       await _timersRepository.createInterval(event.minutes);
@@ -67,6 +92,7 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(status: NewTimerStatus.loading));
+    // TODO delete delay
     await Future.delayed(const Duration(seconds: 1));
     try {
       await _timersRepository.deleteInterval(event.interval.id);
@@ -82,11 +108,19 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     }
   }
 
-  Future<void> _onNameAdded(
-    NewTimerNameAdded event,
+  void _onIntervalSelected(
+    NewTimerIntervalSelected event,
+    Emitter<NewTimerState> emit,
+  ) {
+    emit(state.copyWith(selectedInterval: event.interval));
+  }
+
+  Future<void> _onNameCreated(
+    NewTimerNameCreated event,
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(status: NewTimerStatus.loading));
+    // TODO delete delay
     await Future.delayed(const Duration(seconds: 1));
     try {
       await _timersRepository.createName(event.name);
@@ -107,6 +141,7 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(status: NewTimerStatus.loading));
+    // TODO delete delay
     await Future.delayed(const Duration(seconds: 1));
     try {
       await _timersRepository.deleteName(event.name.id);
@@ -120,5 +155,10 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     } catch (e) {
       emit(state.copyWith(status: NewTimerStatus.failure));
     }
+  }
+
+  void _onNameSelected(
+      NewTimerNameSelected event, Emitter<NewTimerState> emit) {
+    emit(state.copyWith(selectedName: event.name));
   }
 }

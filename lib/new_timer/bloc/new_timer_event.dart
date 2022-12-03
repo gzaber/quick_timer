@@ -9,8 +9,10 @@ abstract class NewTimerEvent extends Equatable {
 
 class NewTimerLoadDataRequested extends NewTimerEvent {}
 
-class NewTimerIntervalAdded extends NewTimerEvent {
-  const NewTimerIntervalAdded({required this.minutes});
+class NewTimerCreated extends NewTimerEvent {}
+
+class NewTimerIntervalCreated extends NewTimerEvent {
+  const NewTimerIntervalCreated({required this.minutes});
 
   final int minutes;
 
@@ -27,8 +29,17 @@ class NewTimerIntervalDeleted extends NewTimerEvent {
   List<Object> get props => [interval];
 }
 
-class NewTimerNameAdded extends NewTimerEvent {
-  const NewTimerNameAdded({required this.name});
+class NewTimerIntervalSelected extends NewTimerEvent {
+  const NewTimerIntervalSelected({required this.interval});
+
+  final Interval interval;
+
+  @override
+  List<Object> get props => [interval];
+}
+
+class NewTimerNameCreated extends NewTimerEvent {
+  const NewTimerNameCreated({required this.name});
 
   final String name;
 
@@ -38,6 +49,15 @@ class NewTimerNameAdded extends NewTimerEvent {
 
 class NewTimerNameDeleted extends NewTimerEvent {
   const NewTimerNameDeleted({required this.name});
+
+  final Name name;
+
+  @override
+  List<Object> get props => [name];
+}
+
+class NewTimerNameSelected extends NewTimerEvent {
+  const NewTimerNameSelected({required this.name});
 
   final Name name;
 
