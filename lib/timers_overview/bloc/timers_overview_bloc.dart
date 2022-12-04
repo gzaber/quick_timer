@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timers_repository/timers_repository.dart';
 
 part 'timers_overview_event.dart';
@@ -23,7 +22,7 @@ class TimersOverviewBloc
     Emitter<TimersOverviewState> emit,
   ) async {
     emit(state.copyWith(status: TimersOverviewStatus.loading));
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
     try {
       final timers = await _timersRepository.readTimers();
       emit(
@@ -31,6 +30,7 @@ class TimersOverviewBloc
       );
     } catch (e) {
       emit(state.copyWith(status: TimersOverviewStatus.failure));
+      print(e.toString());
     }
   }
 }
