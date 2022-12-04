@@ -25,7 +25,7 @@ class TimersOverviewView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<TimersOverviewBloc, TimersOverviewState>(
+      body: BlocConsumer<TimersOverviewBloc, TimersOverviewState>(
         builder: (context, state) {
           if (state.status == TimersOverviewStatus.loading) {
             return const Center(
@@ -49,18 +49,27 @@ class TimersOverviewView extends StatelessWidget {
               );
             }
           }
+
+          return Container();
+        },
+        listener: (context, state) {
           if (state.status == TimersOverviewStatus.failure) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(
                   const SnackBar(content: Text('Something went wrong')));
           }
-          return Container();
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.push(context, NewTimerPage.route()),
+        onPressed: () {
+          Navigator.push(context, NewTimerPage.route()).then(
+            (_) => context
+                .read<TimersOverviewBloc>()
+                .add(TimersOverviewLoadListRequested()),
+          );
+        },
         child: const Icon(
           Icons.add,
         ),
