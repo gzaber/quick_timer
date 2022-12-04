@@ -69,7 +69,15 @@ class HiveTimersApi implements TimersApi {
   @override
   Future<List<Timer>> readTimers() {
     final timers = _timersBox.values
-        .map((timerMap) => Timer.fromJson(timerMap.cast<String, dynamic>()))
+        .map(
+          (timerMap) => Timer.fromJson(
+            timerMap.cast<String, dynamic>().map(
+                  (key, value) => value is Map
+                      ? MapEntry(key, value.cast<String, dynamic>())
+                      : MapEntry(key, value),
+                ),
+          ),
+        )
         .toList();
     return Future.value(timers);
   }

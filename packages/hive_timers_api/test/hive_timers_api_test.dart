@@ -117,11 +117,14 @@ void main() {
             .thenAnswer((_) => [interval1.toJson(), interval2.toJson()]);
 
         expect(await hiveTimersApi.readIntervals(), [interval1, interval2]);
+        verify(() => mockBox.values.toList()).called(1);
       });
+
       test('returns empty list when no intervals found', () async {
         when(() => mockBox.values.toList()).thenAnswer((_) => []);
 
         expect(await hiveTimersApi.readIntervals(), []);
+        verify(() => mockBox.values.toList()).called(1);
       });
     });
 
@@ -133,29 +136,35 @@ void main() {
             .thenAnswer((_) => [name1.toJson(), name2.toJson()]);
 
         expect(await hiveTimersApi.readNames(), [name1, name2]);
+        verify(() => mockBox.values.toList()).called(1);
       });
 
       test('returns empty list when no names found', () async {
         when(() => mockBox.values.toList()).thenAnswer((_) => []);
 
         expect(await hiveTimersApi.readNames(), []);
+        verify(() => mockBox.values.toList()).called(1);
       });
     });
 
     group('readTimers', () {
-      test('read all timers', () {
+      test('read all timers', () async {
         final timer1 =
             Timer(interval: Interval(minutes: 10), name: Name(name: 'name1'));
         final timer2 =
             Timer(interval: Interval(minutes: 20), name: Name(name: 'name2'));
         when(() => mockBox.values.toList())
             .thenAnswer((_) => [timer1.toJson(), timer2.toJson()]);
+
+        expect(await hiveTimersApi.readTimers(), [timer1, timer2]);
+        verify(() => mockBox.values.toList()).called(1);
       });
 
       test('returns empty list when no timers found', () async {
         when(() => mockBox.values.toList()).thenAnswer((_) => []);
 
         expect(await hiveTimersApi.readTimers(), []);
+        verify(() => mockBox.values.toList()).called(1);
       });
     });
   });
