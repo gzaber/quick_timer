@@ -1,12 +1,15 @@
 part of 'new_timer_bloc.dart';
 
-enum NewTimerStatus { initial, loading, success, failure }
+enum IntervalsStatus { initial, loading, success, failure }
+
+enum NamesStatus { initial, loading, success, failure }
 
 enum CreationStatus { initial, loading, success, failure, unselected }
 
 class NewTimerState extends Equatable {
   const NewTimerState({
-    this.status = NewTimerStatus.initial,
+    this.intervalsStatus = IntervalsStatus.initial,
+    this.namesStatus = NamesStatus.initial,
     this.creationStatus = CreationStatus.initial,
     this.intervals = const [],
     this.names = const [],
@@ -14,7 +17,8 @@ class NewTimerState extends Equatable {
     this.selectedName,
   });
 
-  final NewTimerStatus status;
+  final IntervalsStatus intervalsStatus;
+  final NamesStatus namesStatus;
   final CreationStatus creationStatus;
   final List<Interval> intervals;
   final List<Name> names;
@@ -23,7 +27,8 @@ class NewTimerState extends Equatable {
 
   @override
   List<Object?> get props => [
-        status,
+        intervalsStatus,
+        namesStatus,
         creationStatus,
         intervals,
         names,
@@ -32,7 +37,8 @@ class NewTimerState extends Equatable {
       ];
 
   NewTimerState copyWith({
-    NewTimerStatus? status,
+    IntervalsStatus? intervalsStatus,
+    NamesStatus? namesStatus,
     CreationStatus? creationStatus,
     List<Interval>? intervals,
     List<Name>? names,
@@ -40,7 +46,8 @@ class NewTimerState extends Equatable {
     Name? selectedName,
   }) {
     return NewTimerState(
-      status: status ?? this.status,
+      intervalsStatus: intervalsStatus ?? this.intervalsStatus,
+      namesStatus: namesStatus ?? this.namesStatus,
       creationStatus: creationStatus ?? this.creationStatus,
       intervals: intervals ?? this.intervals,
       names: names ?? this.names,
