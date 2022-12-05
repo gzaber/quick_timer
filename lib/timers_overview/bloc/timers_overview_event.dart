@@ -7,7 +7,7 @@ abstract class TimersOverviewEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class TimersOverviewLoadListRequested extends TimersOverviewEvent {}
+class TimersOverviewLoadTimersRequested extends TimersOverviewEvent {}
 
 class TimersOverviewTimerDeleted extends TimersOverviewEvent {
   const TimersOverviewTimerDeleted({required this.timer});
@@ -18,6 +18,6 @@ class TimersOverviewTimerDeleted extends TimersOverviewEvent {
   List<Object> get props => [timer];
 }
 
-class TimersOverviewTimerStarted extends TimersOverviewEvent {}
+// class TimersOverviewTimerStarted extends TimersOverviewEvent {}
 
-class TimersOverviewTimerStopped extends TimersOverviewEvent {}
+// class TimersOverviewTimerStopped extends TimersOverviewEvent {}
