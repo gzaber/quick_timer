@@ -149,32 +149,79 @@ class _OtherTimerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: const Color(0xFF343D58),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            timer.name.name,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
+    return GestureDetector(
+      onLongPress: () {
+        _DeleteDialog.show(context, itemName: 'timer').then((value) {
+          if (value == true) {
+            context.read<TimersOverviewBloc>()
+              ..add(TimersOverviewTimerDeleted(timer: timer))
+              ..add(TimersOverviewLoadListRequested());
+          }
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: const Color(0xFF343D58),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              timer.name.name,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
             ),
-          ),
-          Text(
-            '${timer.interval.minutes} min',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
+            Text(
+              '${timer.interval.minutes} min',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _DeleteDialog extends StatelessWidget {
+  const _DeleteDialog({
+    Key? key,
+    required this.itemName,
+  }) : super(key: key);
+
+  final String itemName;
+
+  static Future<bool?> show(BuildContext context, {required String itemName}) {
+    return showDialog<bool>(
+      context: context,
+      useRootNavigator: false,
+      builder: (_) => _DeleteDialog(itemName: itemName),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Delete'),
+      content: Text('Delete $itemName?'),
+      actionsAlignment: MainAxisAlignment.spaceBetween,
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop<bool>(context, false),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () => Navigator.pop<bool>(context, true),
+          child: const Text('OK'),
+        ),
+      ],
     );
   }
 }

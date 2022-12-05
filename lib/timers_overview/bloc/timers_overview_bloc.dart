@@ -13,6 +13,7 @@ class TimersOverviewBloc
       : _timersRepository = timersRepository,
         super(const TimersOverviewState()) {
     on<TimersOverviewLoadListRequested>(_onLoadListRequested);
+    on<TimersOverviewTimerDeleted>(_onTimerDeleted);
   }
 
   final TimersRepository _timersRepository;
@@ -26,11 +27,23 @@ class TimersOverviewBloc
     try {
       final timers = await _timersRepository.readTimers();
       emit(
-        state.copyWith(status: TimersOverviewStatus.success, timers: timers),
-      );
+          state.copyWith(status: TimersOverviewStatus.success, timers: timers));
     } catch (e) {
       emit(state.copyWith(status: TimersOverviewStatus.failure));
-      print(e.toString());
+    }
+  }
+
+  Future<void> _onTimerDeleted(
+    TimersOverviewTimerDeleted event,
+    Emitter<TimersOverviewState> emit,
+  ) async {
+    emit(state.copyWith(status: TimersOverviewStatus.loading));
+    await Future.delayed(const Duration(seconds: 1));
+    try {
+      await _timersRepository.deleteTimer(event.timer.id);
+      emit(state.copyWith(status: TimersOverviewStatus.success));
+    } catch (e) {
+      emit(state.copyWith(status: TimersOverviewStatus.failure));
     }
   }
 }
