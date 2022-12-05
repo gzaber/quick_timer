@@ -8,8 +8,8 @@ import 'app.dart';
 void main() async {
   await Hive.initFlutter();
 
-  final timersApi = await HiveTimersApi.init(Hive);
-  final timersRepository = TimersRepository(timersApi);
+  final timersApi = await HiveTimersApi.init(hiveInterface: Hive);
+  final timersRepository = TimersRepository(timersApi: timersApi);
 
   runApp(
     App(timersRepository: timersRepository),

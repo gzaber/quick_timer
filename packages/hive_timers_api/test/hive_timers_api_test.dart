@@ -20,20 +20,20 @@ void main() {
 
       when(() => mockHive.openBox<Map>(any())).thenAnswer((_) async => mockBox);
 
-      hiveTimersApi = await HiveTimersApi.init(mockHive);
+      hiveTimersApi = await HiveTimersApi.init(hiveInterface: mockHive);
     });
 
     group('init', () {
       test('works correctly', () {
         expect(
-          () async => await HiveTimersApi.init(mockHive),
+          () async => await HiveTimersApi.init(hiveInterface: mockHive),
           returnsNormally,
         );
       });
 
       test('returns HiveTimersApi object', () async {
         expect(
-          await HiveTimersApi.init(mockHive),
+          await HiveTimersApi.init(hiveInterface: mockHive),
           isA<HiveTimersApi>(),
         );
       });

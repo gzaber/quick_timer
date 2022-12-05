@@ -12,7 +12,7 @@ void main() {
 
     setUp(() {
       timersApi = MockTimersApi();
-      timersRepository = TimersRepository(timersApi);
+      timersRepository = TimersRepository(timersApi: timersApi);
     });
 
     group('createName', () {

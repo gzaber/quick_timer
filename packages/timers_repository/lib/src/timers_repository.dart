@@ -1,7 +1,7 @@
 import 'package:timers_api/timers_api.dart';
 
 class TimersRepository {
-  TimersRepository(this._timersApi);
+  TimersRepository({required TimersApi timersApi}) : _timersApi = timersApi;
 
   final TimersApi _timersApi;
 
