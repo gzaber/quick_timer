@@ -7,7 +7,9 @@ abstract class NewTimerEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class NewTimerLoadDataRequested extends NewTimerEvent {}
+class NewTimerLoadIntervalsRequested extends NewTimerEvent {}
+
+class NewTimerLoadNamesRequested extends NewTimerEvent {}
 
 class NewTimerCreated extends NewTimerEvent {}
 

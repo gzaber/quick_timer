@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timers_repository/timers_repository.dart';
 
-import '../../new_timer/new_timer.dart';
+import '../../new_timer/new_timer.dart' show NewTimerPage;
 import '../timers_overview.dart';
 
 class TimersOverviewPage extends StatelessWidget {
@@ -13,7 +13,7 @@ class TimersOverviewPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => TimersOverviewBloc(
         timersRepository: RepositoryProvider.of<TimersRepository>(context),
-      )..add(TimersOverviewLoadListRequested()),
+      )..add(TimersOverviewLoadTimersRequested()),
       child: const TimersOverviewView(),
     );
   }
@@ -57,9 +57,9 @@ class TimersOverviewView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const _HeaderText(title: 'Most used timers'),
+                      const HeaderText(title: 'Most used timers'),
                       const _MostUsedTimers(),
-                      const _HeaderText(title: 'Other timers'),
+                      const HeaderText(title: 'Other timers'),
                       _OtherTimers(timers: state.timers),
                     ],
                   ),
@@ -79,7 +79,7 @@ class TimersOverviewView extends StatelessWidget {
             Navigator.push(context, NewTimerPage.route()).then(
               (_) => context
                   .read<TimersOverviewBloc>()
-                  .add(TimersOverviewLoadListRequested()),
+                  .add(TimersOverviewLoadTimersRequested()),
             );
           },
           child: const Icon(
@@ -151,11 +151,11 @@ class _OtherTimerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () {
-        _DeleteDialog.show(context, itemName: 'timer').then((value) {
+        DeleteTimerDialog.show(context, itemName: 'timer').then((value) {
           if (value == true) {
             context.read<TimersOverviewBloc>()
               ..add(TimersOverviewTimerDeleted(timer: timer))
-              ..add(TimersOverviewLoadListRequested());
+              ..add(TimersOverviewLoadTimersRequested());
           }
         });
       },
@@ -185,63 +185,6 @@ class _OtherTimerItem extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _DeleteDialog extends StatelessWidget {
-  const _DeleteDialog({
-    Key? key,
-    required this.itemName,
-  }) : super(key: key);
-
-  final String itemName;
-
-  static Future<bool?> show(BuildContext context, {required String itemName}) {
-    return showDialog<bool>(
-      context: context,
-      useRootNavigator: false,
-      builder: (_) => _DeleteDialog(itemName: itemName),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Delete'),
-      content: Text('Delete $itemName?'),
-      actionsAlignment: MainAxisAlignment.spaceBetween,
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop<bool>(context, false),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop<bool>(context, true),
-          child: const Text('OK'),
-        ),
-      ],
-    );
-  }
-}
-
-class _HeaderText extends StatelessWidget {
-  const _HeaderText({
-    Key? key,
-    required this.title,
-  }) : super(key: key);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: const TextStyle(
-        color: Colors.white,
-        fontSize: 16,
-        fontWeight: FontWeight.bold,
       ),
     );
   }

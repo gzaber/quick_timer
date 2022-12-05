@@ -21,7 +21,9 @@ class NewTimerPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => NewTimerBloc(
         timersRepository: RepositoryProvider.of<repo.TimersRepository>(context),
-      )..add(NewTimerLoadDataRequested()),
+      )
+        ..add(NewTimerLoadIntervalsRequested())
+        ..add(NewTimerLoadNamesRequested()),
       child: const NewTimerView(),
     );
   }
@@ -57,8 +59,8 @@ class NewTimerView extends StatelessWidget {
           if (state.creationStatus == CreationStatus.failure) {
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
-              ..showSnackBar(
-                  const SnackBar(content: Text('Something went wrong')));
+              ..showSnackBar(const SnackBar(
+                  content: Text('Something went wrong during timer creation')));
           }
         },
         builder: (context, state) {
@@ -84,44 +86,49 @@ class NewTimerView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const _HeaderText(title: 'Select time'),
+            const HeaderText(title: 'Select time'),
             Container(
               height: 103,
               margin: const EdgeInsets.only(top: 20, bottom: 30),
               child: BlocConsumer<NewTimerBloc, NewTimerState>(
                 builder: (context, state) {
-                  if (state.status == NewTimerStatus.loading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                  if (state.intervalsStatus == IntervalsStatus.loading) {
+                    return const Center(child: CircularProgressIndicator());
                   }
-                  if (state.status == NewTimerStatus.success) {
+                  if (state.intervalsStatus == IntervalsStatus.success) {
                     return _Intervals(intervals: state.intervals);
                   }
                   return Container();
                 },
                 listener: (context, state) {
-                  if (state.status == NewTimerStatus.failure) {
+                  if (state.intervalsStatus == IntervalsStatus.failure) {
                     ScaffoldMessenger.of(context)
                       ..hideCurrentSnackBar()
                       ..showSnackBar(const SnackBar(
-                          content: Text('Something went wrong')));
+                          content:
+                              Text('Something went wrong with intervals')));
                   }
                 },
               ),
             ),
-            const _HeaderText(title: 'Name'),
-            BlocBuilder<NewTimerBloc, NewTimerState>(
+            const HeaderText(title: 'Name'),
+            BlocConsumer<NewTimerBloc, NewTimerState>(
               builder: (context, state) {
-                if (state.status == NewTimerStatus.loading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                if (state.namesStatus == NamesStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
                 }
-                if (state.status == NewTimerStatus.success) {
+                if (state.namesStatus == NamesStatus.success) {
                   return _Names(names: state.names);
                 }
                 return Container();
+              },
+              listener: (context, state) {
+                if (state.namesStatus == NamesStatus.failure) {
+                  ScaffoldMessenger.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(const SnackBar(
+                        content: Text('Something went wrong with names')));
+                }
               },
             ),
           ],
@@ -177,11 +184,11 @@ class _IntervalItem extends StatelessWidget {
             .add(NewTimerIntervalSelected(interval: interval));
       },
       onLongPress: () {
-        _DeleteDialog.show(context, itemName: 'interval').then((value) {
+        DeleteItemDialog.show(context, itemName: 'interval').then((value) {
           if (value == true) {
-            context
-                .read<NewTimerBloc>()
-                .add(NewTimerIntervalDeleted(interval: interval));
+            context.read<NewTimerBloc>()
+              ..add(NewTimerIntervalDeleted(interval: interval))
+              ..add(NewTimerLoadIntervalsRequested());
           }
         });
       },
@@ -262,12 +269,12 @@ class _CreateIntervalButton extends StatelessWidget {
         const SizedBox(height: 15),
         IconButton(
           onPressed: () {
-            _CreateIntervalDialog.show(context, title: 'Select minutes').then(
+            CreateIntervalDialog.show(context, title: 'Select minutes').then(
               (value) {
                 if (value != null) {
-                  context
-                      .read<NewTimerBloc>()
-                      .add(NewTimerIntervalCreated(minutes: value));
+                  context.read<NewTimerBloc>()
+                    ..add(NewTimerIntervalCreated(minutes: value))
+                    ..add(NewTimerLoadIntervalsRequested());
                 }
               },
             );
@@ -331,9 +338,11 @@ class _NameItem extends StatelessWidget {
         context.read<NewTimerBloc>().add(NewTimerNameSelected(name: name));
       },
       onLongPress: () {
-        _DeleteDialog.show(context, itemName: 'name').then((value) {
+        DeleteItemDialog.show(context, itemName: 'name').then((value) {
           if (value == true) {
-            context.read<NewTimerBloc>().add(NewTimerNameDeleted(name: name));
+            context.read<NewTimerBloc>()
+              ..add(NewTimerNameDeleted(name: name))
+              ..add(NewTimerLoadNamesRequested());
           }
         });
       },
@@ -368,12 +377,12 @@ class _CreateNameButton extends StatelessWidget {
       height: 42,
       child: IconButton(
         onPressed: () {
-          _CreateNameDialog.show(context, title: 'Create name').then(
+          CreateNameDialog.show(context, title: 'Create name').then(
             (value) {
               if (value != null) {
-                context
-                    .read<NewTimerBloc>()
-                    .add(NewTimerNameCreated(name: value));
+                context.read<NewTimerBloc>()
+                  ..add(NewTimerNameCreated(name: value))
+                  ..add(NewTimerLoadNamesRequested());
               }
             },
           );
@@ -384,172 +393,6 @@ class _CreateNameButton extends StatelessWidget {
           color: Colors.white,
         ),
         splashRadius: 25,
-      ),
-    );
-  }
-}
-
-class _DeleteDialog extends StatelessWidget {
-  const _DeleteDialog({
-    Key? key,
-    required this.itemName,
-  }) : super(key: key);
-
-  final String itemName;
-
-  static Future<bool?> show(BuildContext context, {required String itemName}) {
-    return showDialog<bool>(
-      context: context,
-      useRootNavigator: false,
-      builder: (_) => _DeleteDialog(itemName: itemName),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Delete'),
-      content: Text('Delete $itemName?'),
-      actionsAlignment: MainAxisAlignment.spaceBetween,
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop<bool>(context, false),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop<bool>(context, true),
-          child: const Text('OK'),
-        ),
-      ],
-    );
-  }
-}
-
-class _CreateNameDialog extends StatelessWidget {
-  const _CreateNameDialog({
-    Key? key,
-    required this.title,
-  }) : super(key: key);
-
-  final String title;
-
-  static Future<String?> show(BuildContext context, {required String title}) {
-    return showDialog<String>(
-      context: context,
-      useRootNavigator: false,
-      builder: (_) => _CreateNameDialog(title: title),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final nameController = TextEditingController();
-
-    return AlertDialog(
-      title: Text(title),
-      content: TextField(
-        controller: nameController,
-      ),
-      actionsAlignment: MainAxisAlignment.spaceBetween,
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, null),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context, nameController.text),
-          child: const Text('Save'),
-        ),
-      ],
-    );
-  }
-}
-
-class _CreateIntervalDialog extends StatefulWidget {
-  const _CreateIntervalDialog({
-    Key? key,
-    required this.title,
-  }) : super(key: key);
-
-  final String title;
-
-  static Future<int?> show(BuildContext context, {required String title}) {
-    return showDialog<int>(
-      context: context,
-      useRootNavigator: false,
-      builder: (_) => _CreateIntervalDialog(title: title),
-    );
-  }
-
-  @override
-  State<_CreateIntervalDialog> createState() => _CreateIntervalDialogState();
-}
-
-class _CreateIntervalDialogState extends State<_CreateIntervalDialog> {
-  int activeIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.title),
-      content: SizedBox(
-        height: 50,
-        width: MediaQuery.of(context).size.width,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
-          itemCount: 60,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  activeIndex = index;
-                });
-              },
-              child: Container(
-                width: 50,
-                color: activeIndex == index ? Colors.teal : Colors.pink,
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: Center(child: Text('${index + 1}')),
-              ),
-            );
-          },
-        ),
-      ),
-      actionsAlignment: MainAxisAlignment.spaceBetween,
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, null),
-          child: const Text('Cancel'),
-        ),
-        TextButton(
-          onPressed: () => Navigator.pop(context, activeIndex + 1),
-          child: const Text('Save'),
-        ),
-      ],
-    );
-  }
-}
-
-class _HeaderText extends StatelessWidget {
-  const _HeaderText({
-    Key? key,
-    required this.title,
-  }) : super(key: key);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 15),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
       ),
     );
   }

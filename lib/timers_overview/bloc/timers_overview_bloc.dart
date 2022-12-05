@@ -12,14 +12,14 @@ class TimersOverviewBloc
   TimersOverviewBloc({required TimersRepository timersRepository})
       : _timersRepository = timersRepository,
         super(const TimersOverviewState()) {
-    on<TimersOverviewLoadListRequested>(_onLoadListRequested);
+    on<TimersOverviewLoadTimersRequested>(_onLoadTimersRequested);
     on<TimersOverviewTimerDeleted>(_onTimerDeleted);
   }
 
   final TimersRepository _timersRepository;
 
-  Future<void> _onLoadListRequested(
-    TimersOverviewLoadListRequested event,
+  Future<void> _onLoadTimersRequested(
+    TimersOverviewLoadTimersRequested event,
     Emitter<TimersOverviewState> emit,
   ) async {
     emit(state.copyWith(status: TimersOverviewStatus.loading));
