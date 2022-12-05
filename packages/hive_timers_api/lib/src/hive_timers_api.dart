@@ -8,10 +8,12 @@ class HiveTimersApi implements TimersApi {
   final Box<Map> _namesBox;
   final Box<Map> _timersBox;
 
-  static Future<HiveTimersApi> init(HiveInterface hive) async {
-    final intervalsBox = await hive.openBox<Map>('intervals');
-    final namesBox = await hive.openBox<Map>('names');
-    final timersBox = await hive.openBox<Map>('timers');
+  static Future<HiveTimersApi> init({
+    required HiveInterface hiveInterface,
+  }) async {
+    final intervalsBox = await hiveInterface.openBox<Map>('intervals');
+    final namesBox = await hiveInterface.openBox<Map>('names');
+    final timersBox = await hiveInterface.openBox<Map>('timers');
 
     return HiveTimersApi._(intervalsBox, namesBox, timersBox);
   }
