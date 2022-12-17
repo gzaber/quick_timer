@@ -26,7 +26,11 @@ class _CreateIntervalDialogState extends State<CreateIntervalDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text(widget.title),
+      title: Text(
+        widget.title,
+        style: const TextStyle(color: Colors.white),
+      ),
+      backgroundColor: const Color(0xFF343D58),
       content: SizedBox(
         height: 50,
         width: MediaQuery.of(context).size.width,
@@ -42,10 +46,24 @@ class _CreateIntervalDialogState extends State<CreateIntervalDialog> {
                 });
               },
               child: Container(
-                width: 50,
-                color: activeIndex == index ? Colors.teal : Colors.pink,
+                width: 40,
+                decoration: BoxDecoration(
+                  color: activeIndex == index
+                      ? const Color(0xFFFF82A1)
+                      : const Color(0xFF343D58),
+                  border: Border.all(
+                    color: activeIndex == index
+                        ? const Color(0xFFFF82A1)
+                        : Colors.white,
+                  ),
+                ),
                 margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: Center(child: Text('${index + 1}')),
+                child: Center(
+                  child: Text(
+                    '${index + 1}',
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
               ),
             );
           },
@@ -55,11 +73,17 @@ class _CreateIntervalDialogState extends State<CreateIntervalDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, null),
-          child: const Text('Cancel'),
+          child: const Text(
+            'Cancel',
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, activeIndex + 1),
-          child: const Text('Save'),
+          child: const Text(
+            'Save',
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
         ),
       ],
     );
