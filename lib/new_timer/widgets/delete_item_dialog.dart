@@ -19,17 +19,30 @@ class DeleteItemDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Delete'),
-      content: Text('Delete $itemName?'),
+      title: const Text(
+        'Delete',
+        style: TextStyle(color: Colors.white),
+      ),
+      backgroundColor: const Color(0xFF343D58),
+      content: Text(
+        'Delete $itemName?',
+        style: const TextStyle(color: Colors.white),
+      ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actions: [
         TextButton(
           onPressed: () => Navigator.pop<bool>(context, false),
-          child: const Text('Cancel'),
+          child: const Text(
+            'Cancel',
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
         ),
         TextButton(
           onPressed: () => Navigator.pop<bool>(context, true),
-          child: const Text('OK'),
+          child: const Text(
+            'OK',
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
         ),
       ],
     );
