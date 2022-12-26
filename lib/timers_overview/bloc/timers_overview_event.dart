@@ -18,6 +18,21 @@ class TimersOverviewTimerDeleted extends TimersOverviewEvent {
   List<Object> get props => [timer];
 }
 
-// class TimersOverviewTimerStarted extends TimersOverviewEvent {}
+class TimersOverviewTimerStarted extends TimersOverviewEvent {
+  const TimersOverviewTimerStarted({required this.timer});
 
-// class TimersOverviewTimerStopped extends TimersOverviewEvent {}
+  final Timer timer;
+
+  @override
+  List<Object> get props => [timer];
+}
+
+class TimersOverviewTimerReset extends TimersOverviewEvent {}
+
+class _TimersOverviewTimerCounted extends TimersOverviewEvent {
+  const _TimersOverviewTimerCounted(this.secondsCounter);
+
+  final int secondsCounter;
+  @override
+  List<Object> get props => [secondsCounter];
+}

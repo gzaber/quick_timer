@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timers_repository/timers_repository.dart';
 
 import '../../new_timer/new_timer.dart' show NewTimerPage;
+import '../counter.dart';
 import '../timers_overview.dart';
 
 class TimersOverviewPage extends StatelessWidget {
@@ -13,6 +14,7 @@ class TimersOverviewPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => TimersOverviewBloc(
         timersRepository: RepositoryProvider.of<TimersRepository>(context),
+        counter: const Counter(),
       )..add(TimersOverviewLoadTimersRequested()),
       child: const TimersOverviewView(),
     );
@@ -60,7 +62,7 @@ class TimersOverviewView extends StatelessWidget {
                       const HeaderText(title: 'Most used timers'),
                       const _MostUsedTimers(),
                       const HeaderText(title: 'Other timers'),
-                      _OtherTimers(timers: state.timers),
+                      _Timers(timers: state.timers),
                     ],
                   ),
                 );
@@ -111,8 +113,8 @@ class _MostUsedTimers extends StatelessWidget {
   }
 }
 
-class _OtherTimers extends StatelessWidget {
-  const _OtherTimers({
+class _Timers extends StatelessWidget {
+  const _Timers({
     Key? key,
     required this.timers,
   }) : super(key: key);
@@ -132,15 +134,15 @@ class _OtherTimers extends StatelessWidget {
       children: List.generate(
         timers.length,
         (index) {
-          return _OtherTimerItem(timer: timers[index]);
+          return _TimerItem(timer: timers[index]);
         },
       ),
     );
   }
 }
 
-class _OtherTimerItem extends StatelessWidget {
-  const _OtherTimerItem({
+class _TimerItem extends StatelessWidget {
+  const _TimerItem({
     Key? key,
     required this.timer,
   }) : super(key: key);
@@ -150,6 +152,14 @@ class _OtherTimerItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: () {
+        // context.read<TimersOverviewBloc>().state.countdownTimer?.id == timer.id
+        //     ? null //context.read<TimersOverviewBloc>().add(TimersOverviewTimerReset())
+        //     :
+        context
+            .read<TimersOverviewBloc>()
+            .add(TimersOverviewTimerStarted(timer: timer));
+      },
       onLongPress: () {
         DeleteTimerDialog.show(context, itemName: 'timer').then((value) {
           if (value == true) {
@@ -171,17 +181,60 @@ class _OtherTimerItem extends StatelessWidget {
           children: [
             Text(
               timer.name.name,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16,
               ),
             ),
-            Text(
-              '${timer.interval.minutes} min',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
+            BlocBuilder<TimersOverviewBloc, TimersOverviewState>(
+              builder: (context, state) {
+                if (state.timerStatus == TimerStatus.inProgress &&
+                    state.countdownTimer?.id == timer.id) {
+                  return Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        context
+                            .read<TimersOverviewBloc>()
+                            .add(TimersOverviewTimerReset());
+                      },
+                      child: const Icon(
+                        Icons.pause,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  );
+                }
+                return Container();
+              },
+            ),
+            BlocBuilder<TimersOverviewBloc, TimersOverviewState>(
+              builder: (context, state) {
+                if (state.timerStatus == TimerStatus.inProgress &&
+                    state.countdownTimer?.id == timer.id) {
+                  final duration = Duration(seconds: state.secondsCounter);
+                  final minutes = duration.inMinutes.remainder(60).toString();
+                  final seconds = duration.inSeconds
+                      .remainder(60)
+                      .toString()
+                      .padLeft(2, '0');
+                  return Text(
+                    '$minutes:$seconds min',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
+                  );
+                }
+                return Text(
+                  '${timer.interval.minutes} min',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                  ),
+                );
+              },
             ),
           ],
         ),
