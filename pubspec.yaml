@@ -7,6 +7,9 @@ environment:
   sdk: ">=2.18.4 <3.0.0"
 
 dependencies:
+  app_ui:
+    path: packages/app_ui
+  audioplayers: ^1.1.1
   equatable: ^2.0.5
   flutter:
     sdk: flutter
@@ -24,3 +27,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/

@@ -1,3 +1,5 @@
+import 'package:app_ui/app_ui.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timers_repository/timers_repository.dart';
@@ -7,7 +9,9 @@ import '../counter.dart';
 import '../timers_overview.dart';
 
 class TimersOverviewPage extends StatelessWidget {
-  const TimersOverviewPage({super.key});
+  const TimersOverviewPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,17 +26,24 @@ class TimersOverviewPage extends StatelessWidget {
 }
 
 class TimersOverviewView extends StatelessWidget {
-  const TimersOverviewView({super.key});
+  const TimersOverviewView({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final player = AudioPlayer();
+
     return BlocListener<TimersOverviewBloc, TimersOverviewState>(
-      listener: (context, state) {
+      listener: (context, state) async {
         if (state.status == TimersOverviewStatus.failure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
                 const SnackBar(content: Text('Something went wrong')));
+        }
+        if (state.timerStatus == TimerStatus.completed) {
+          await player.play(AssetSource('sound.wav'));
         }
       },
       child: Scaffold(
@@ -137,7 +148,7 @@ class _TimerItem extends StatelessWidget {
             .add(TimersOverviewTimerStarted(timer: timer));
       },
       onLongPress: () {
-        DeleteTimerDialog.show(context, itemName: 'timer').then((value) {
+        DeleteItemDialog.show(context, itemName: 'timer').then((value) {
           if (value == true) {
             context.read<TimersOverviewBloc>()
               ..add(TimersOverviewTimerDeleted(timer: timer))

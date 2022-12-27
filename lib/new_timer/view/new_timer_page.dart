@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timers_repository/timers_repository.dart' as repo;
@@ -70,9 +71,9 @@ class NewTimerView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: const [
-              HeaderText(title: 'Select time'),
+              HeaderText(title: 'Select time', leftPadding: 15),
               _Intervals(),
-              HeaderText(title: 'Name'),
+              HeaderText(title: 'Name', leftPadding: 15),
               _Names(),
             ],
           ),
@@ -156,7 +157,7 @@ class _IntervalItem extends StatelessWidget {
                   width: 75,
                   height: 75,
                   decoration: const BoxDecoration(
-                    color: Color(0xFF111B3E),
+                    color: AppColors.darkBlue,
                     shape: BoxShape.circle,
                   ),
                   margin: const EdgeInsets.only(bottom: 10),
@@ -165,8 +166,8 @@ class _IntervalItem extends StatelessWidget {
                   painter: _CircleSectorPainter(
                     minutes: interval.minutes,
                     color: selectedInterval == interval
-                        ? const Color(0xFFFF82A1)
-                        : const Color(0xFF233266),
+                        ? AppColors.pink
+                        : AppColors.blue,
                   ),
                 ),
               ],
@@ -307,9 +308,7 @@ class _NameItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: name == selectedName
-              ? const Color(0xFFFF82A1)
-              : const Color(0xFF343D58),
+          color: name == selectedName ? AppColors.pink : AppColors.lightBlue,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
@@ -363,8 +362,7 @@ class _CustomFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<NewTimerBloc, NewTimerState>(
-      listener: (context, state) {},
+    return BlocBuilder<NewTimerBloc, NewTimerState>(
       builder: (context, state) {
         return FloatingActionButton.extended(
           onPressed: () {

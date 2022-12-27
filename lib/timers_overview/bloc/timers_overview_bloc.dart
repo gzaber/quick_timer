@@ -96,13 +96,15 @@ class TimersOverviewBloc
     _TimersOverviewTimerCounted event,
     Emitter<TimersOverviewState> emit,
   ) {
-    emit(
-      event.secondsCounter > 0
-          ? state.copyWith(secondsCounter: event.secondsCounter)
-          : state.copyWith(
-              timerStatus: TimerStatus.completed,
-              countdownTimer: null,
-              secondsCounter: 0),
-    );
+    if (event.secondsCounter > 0) {
+      emit(state.copyWith(secondsCounter: event.secondsCounter));
+    } else {
+      emit(state.copyWith(timerStatus: TimerStatus.completed));
+      emit(state.copyWith(
+        timerStatus: TimerStatus.initial,
+        countdownTimer: null,
+        secondsCounter: 0,
+      ));
+    }
   }
 }

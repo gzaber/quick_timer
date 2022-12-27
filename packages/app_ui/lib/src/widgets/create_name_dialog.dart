@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../colors/colors.dart';
+
 class CreateNameDialog extends StatelessWidget {
   const CreateNameDialog({
     Key? key,
@@ -25,7 +27,7 @@ class CreateNameDialog extends StatelessWidget {
         title,
         style: const TextStyle(color: Colors.white),
       ),
-      backgroundColor: const Color(0xFF343D58),
+      backgroundColor: AppColors.lightBlue,
       content: TextField(
         controller: nameController,
         style: const TextStyle(color: Colors.white),
@@ -36,14 +38,14 @@ class CreateNameDialog extends StatelessWidget {
           onPressed: () => Navigator.pop(context, null),
           child: const Text(
             'Cancel',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, nameController.text),
           child: const Text(
             'Save',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
       ],

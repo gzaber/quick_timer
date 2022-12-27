@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../colors/colors.dart';
+
 class CreateIntervalDialog extends StatefulWidget {
   const CreateIntervalDialog({
     Key? key,
@@ -49,12 +51,10 @@ class _CreateIntervalDialogState extends State<CreateIntervalDialog> {
                 width: 40,
                 decoration: BoxDecoration(
                   color: activeIndex == index
-                      ? const Color(0xFFFF82A1)
-                      : const Color(0xFF343D58),
+                      ? AppColors.pink
+                      : AppColors.lightBlue,
                   border: Border.all(
-                    color: activeIndex == index
-                        ? const Color(0xFFFF82A1)
-                        : Colors.white,
+                    color: activeIndex == index ? AppColors.pink : Colors.white,
                   ),
                 ),
                 margin: const EdgeInsets.symmetric(horizontal: 10),
@@ -75,14 +75,14 @@ class _CreateIntervalDialogState extends State<CreateIntervalDialog> {
           onPressed: () => Navigator.pop(context, null),
           child: const Text(
             'Cancel',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, activeIndex + 1),
           child: const Text(
             'Save',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
       ],
