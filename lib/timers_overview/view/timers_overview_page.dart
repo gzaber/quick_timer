@@ -26,78 +26,43 @@ class TimersOverviewView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('QuickTimer'),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        child: BlocConsumer<TimersOverviewBloc, TimersOverviewState>(
-          listener: (context, state) {
-            if (state.status == TimersOverviewStatus.failure) {
-              ScaffoldMessenger.of(context)
-                ..hideCurrentSnackBar()
-                ..showSnackBar(
-                    const SnackBar(content: Text('Something went wrong')));
-            }
-          },
-          builder: (context, state) {
-            if (state.status == TimersOverviewStatus.loading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (state.status == TimersOverviewStatus.success) {
-              if (state.timers.isEmpty) {
-                return const Center(
-                  child: Text(
-                    'No timers yet',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                );
-              } else {
-                return SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const HeaderText(title: 'Most used timers'),
-                      const _MostUsedTimers(),
-                      const HeaderText(title: 'Other timers'),
-                      _Timers(timers: state.timers),
-                    ],
-                  ),
-                );
-              }
-            }
-            return Container();
-          },
+    return BlocListener<TimersOverviewBloc, TimersOverviewState>(
+      listener: (context, state) {
+        if (state.status == TimersOverviewStatus.failure) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+                const SnackBar(content: Text('Something went wrong')));
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('QuickTimer'),
+          centerTitle: true,
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: SizedBox(
-        width: 65,
-        height: 65,
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(context, NewTimerPage.route()).then(
-              (_) => context
-                  .read<TimersOverviewBloc>()
-                  .add(TimersOverviewLoadTimersRequested()),
-            );
-          },
-          child: const Icon(
-            Icons.add,
-            size: 35,
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                HeaderText(title: 'Most used timers'),
+                _MostUsedTimers(),
+                HeaderText(title: 'Other timers'),
+                _Timers(),
+              ],
+            ),
           ),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: const _CustomFloatingActionButton(),
       ),
     );
   }
 }
 
 class _MostUsedTimers extends StatelessWidget {
-  const _MostUsedTimers({
-    Key? key,
-  }) : super(key: key);
+  const _MostUsedTimers({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -114,29 +79,43 @@ class _MostUsedTimers extends StatelessWidget {
 }
 
 class _Timers extends StatelessWidget {
-  const _Timers({
-    Key? key,
-    required this.timers,
-  }) : super(key: key);
-
-  final List<Timer> timers;
+  const _Timers({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 3,
-      mainAxisSpacing: 15,
-      crossAxisSpacing: 15,
-      childAspectRatio: 1.15,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.only(top: 20),
-      children: List.generate(
-        timers.length,
-        (index) {
-          return _TimerItem(timer: timers[index]);
-        },
-      ),
+    return BlocBuilder<TimersOverviewBloc, TimersOverviewState>(
+      builder: (context, state) {
+        if (state.status == TimersOverviewStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state.status == TimersOverviewStatus.success) {
+          if (state.timers.isEmpty) {
+            return const Center(
+              child: Text(
+                'No timers yet',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            );
+          } else {
+            return GridView.count(
+              crossAxisCount: 3,
+              mainAxisSpacing: 15,
+              crossAxisSpacing: 15,
+              childAspectRatio: 1.15,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.only(top: 20),
+              children: List.generate(
+                state.timers.length,
+                (index) {
+                  return _TimerItem(timer: state.timers[index]);
+                },
+              ),
+            );
+          }
+        }
+        return Container();
+      },
     );
   }
 }
@@ -153,9 +132,6 @@ class _TimerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // context.read<TimersOverviewBloc>().state.countdownTimer?.id == timer.id
-        //     ? null //context.read<TimersOverviewBloc>().add(TimersOverviewTimerReset())
-        //     :
         context
             .read<TimersOverviewBloc>()
             .add(TimersOverviewTimerStarted(timer: timer));
@@ -187,57 +163,107 @@ class _TimerItem extends StatelessWidget {
                 fontSize: 16,
               ),
             ),
-            BlocBuilder<TimersOverviewBloc, TimersOverviewState>(
-              builder: (context, state) {
-                if (state.timerStatus == TimerStatus.inProgress &&
-                    state.countdownTimer?.id == timer.id) {
-                  return Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        context
-                            .read<TimersOverviewBloc>()
-                            .add(TimersOverviewTimerReset());
-                      },
-                      child: const Icon(
-                        Icons.pause,
-                        color: Colors.white,
-                        size: 20,
-                      ),
-                    ),
-                  );
-                }
-                return Container();
-              },
-            ),
-            BlocBuilder<TimersOverviewBloc, TimersOverviewState>(
-              builder: (context, state) {
-                if (state.timerStatus == TimerStatus.inProgress &&
-                    state.countdownTimer?.id == timer.id) {
-                  final duration = Duration(seconds: state.secondsCounter);
-                  final minutes = duration.inMinutes.remainder(60).toString();
-                  final seconds = duration.inSeconds
-                      .remainder(60)
-                      .toString()
-                      .padLeft(2, '0');
-                  return Text(
-                    '$minutes:$seconds min',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                    ),
-                  );
-                }
-                return Text(
-                  '${timer.interval.minutes} min',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                  ),
-                );
-              },
-            ),
+            _TimerResetButton(timer: timer),
+            _TimerDuration(timer: timer),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _TimerResetButton extends StatelessWidget {
+  const _TimerResetButton({
+    Key? key,
+    required this.timer,
+  }) : super(key: key);
+
+  final Timer timer;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TimersOverviewBloc, TimersOverviewState>(
+      builder: (context, state) {
+        if (state.timerStatus == TimerStatus.inProgress &&
+            state.countdownTimer?.id == timer.id) {
+          return Center(
+            child: GestureDetector(
+              onTap: () {
+                context
+                    .read<TimersOverviewBloc>()
+                    .add(TimersOverviewTimerReset());
+              },
+              child: const Icon(
+                Icons.pause,
+                color: Colors.white,
+                size: 20,
+              ),
+            ),
+          );
+        }
+        return Container();
+      },
+    );
+  }
+}
+
+class _TimerDuration extends StatelessWidget {
+  const _TimerDuration({
+    Key? key,
+    required this.timer,
+  }) : super(key: key);
+
+  final Timer timer;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TimersOverviewBloc, TimersOverviewState>(
+      builder: (context, state) {
+        if (state.timerStatus == TimerStatus.inProgress &&
+            state.countdownTimer?.id == timer.id) {
+          final duration = Duration(seconds: state.secondsCounter);
+          final minutes = duration.inMinutes.remainder(60).toString();
+          final seconds =
+              duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+          return Text(
+            '$minutes:$seconds min',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+            ),
+          );
+        }
+        return Text(
+          '${timer.interval.minutes} min',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _CustomFloatingActionButton extends StatelessWidget {
+  const _CustomFloatingActionButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 65,
+      height: 65,
+      child: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, NewTimerPage.route()).then(
+            (_) => context
+                .read<TimersOverviewBloc>()
+                .add(TimersOverviewLoadTimersRequested()),
+          );
+        },
+        child: const Icon(Icons.add, size: 35),
       ),
     );
   }
