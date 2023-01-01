@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../colors/colors.dart';
+
 class DeleteItemDialog extends StatelessWidget {
   const DeleteItemDialog({
     Key? key,
@@ -23,7 +25,7 @@ class DeleteItemDialog extends StatelessWidget {
         'Delete',
         style: TextStyle(color: Colors.white),
       ),
-      backgroundColor: const Color(0xFF343D58),
+      backgroundColor: AppColors.lightBlue,
       content: Text(
         'Delete $itemName?',
         style: const TextStyle(color: Colors.white),
@@ -34,14 +36,14 @@ class DeleteItemDialog extends StatelessWidget {
           onPressed: () => Navigator.pop<bool>(context, false),
           child: const Text(
             'Cancel',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
         TextButton(
           onPressed: () => Navigator.pop<bool>(context, true),
           child: const Text(
             'OK',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
       ],

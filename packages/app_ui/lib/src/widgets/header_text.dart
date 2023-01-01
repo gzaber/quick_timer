@@ -4,14 +4,16 @@ class HeaderText extends StatelessWidget {
   const HeaderText({
     Key? key,
     required this.title,
+    this.leftPadding = 0.0,
   }) : super(key: key);
 
   final String title;
+  final double leftPadding;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 15),
+      padding: EdgeInsets.only(left: leftPadding),
       child: Text(
         title,
         style: const TextStyle(

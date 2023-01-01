@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timers_repository/timers_repository.dart' as repo;
@@ -34,104 +35,48 @@ class NewTimerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('New Timer'),
-        toolbarHeight: 107,
-        leading: IconButton(
-          onPressed: () => Navigator.pop<void>(context),
-          icon: const Icon(Icons.arrow_back_ios),
-          splashRadius: 25,
+    return BlocListener<NewTimerBloc, NewTimerState>(
+      listener: (context, state) {
+        if (state.creationStatus == CreationStatus.success) {
+          Navigator.pop(context);
+        }
+        if (state.creationStatus == CreationStatus.unselected) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(const SnackBar(
+                content: Text('Both interval and name should be selected')));
+        }
+        if (state.intervalsStatus == IntervalsStatus.failure ||
+            state.namesStatus == NamesStatus.failure ||
+            state.creationStatus == CreationStatus.failure) {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+                const SnackBar(content: Text('Something went wrong')));
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('New Timer'),
+          toolbarHeight: 107,
+          leading: IconButton(
+            onPressed: () => Navigator.pop<void>(context),
+            icon: const Icon(Icons.arrow_back_ios),
+            splashRadius: 25,
+          ),
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: BlocConsumer<NewTimerBloc, NewTimerState>(
-        listener: (context, state) {
-          if (state.creationStatus == CreationStatus.success) {
-            Navigator.pop(context);
-          }
-          if (state.creationStatus == CreationStatus.unselected) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(const SnackBar(
-                  content: Text('Both interval and name should be selected')));
-          }
-          if (state.creationStatus == CreationStatus.failure) {
-            ScaffoldMessenger.of(context)
-              ..hideCurrentSnackBar()
-              ..showSnackBar(const SnackBar(
-                  content: Text('Something went wrong during timer creation')));
-          }
-        },
-        builder: (context, state) {
-          return FloatingActionButton.extended(
-            onPressed: () {
-              context.read<NewTimerBloc>().add(NewTimerCreated());
-            },
-            label: SizedBox(
-              width: MediaQuery.of(context).size.width - 70,
-              child: Center(
-                child: state.creationStatus == CreationStatus.loading
-                    ? const CircularProgressIndicator()
-                    : const Text(
-                        'Add to timer',
-                        style: TextStyle(fontSize: 16),
-                      ),
-              ),
-            ),
-          );
-        },
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const HeaderText(title: 'Select time'),
-            Container(
-              height: 103,
-              margin: const EdgeInsets.only(top: 20, bottom: 30),
-              child: BlocConsumer<NewTimerBloc, NewTimerState>(
-                builder: (context, state) {
-                  if (state.intervalsStatus == IntervalsStatus.loading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (state.intervalsStatus == IntervalsStatus.success) {
-                    return _Intervals(intervals: state.intervals);
-                  }
-                  return Container();
-                },
-                listener: (context, state) {
-                  if (state.intervalsStatus == IntervalsStatus.failure) {
-                    ScaffoldMessenger.of(context)
-                      ..hideCurrentSnackBar()
-                      ..showSnackBar(const SnackBar(
-                          content:
-                              Text('Something went wrong with intervals')));
-                  }
-                },
-              ),
-            ),
-            const HeaderText(title: 'Name'),
-            BlocConsumer<NewTimerBloc, NewTimerState>(
-              builder: (context, state) {
-                if (state.namesStatus == NamesStatus.loading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (state.namesStatus == NamesStatus.success) {
-                  return _Names(names: state.names);
-                }
-                return Container();
-              },
-              listener: (context, state) {
-                if (state.namesStatus == NamesStatus.failure) {
-                  ScaffoldMessenger.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(const SnackBar(
-                        content: Text('Something went wrong with names')));
-                }
-              },
-            ),
-          ],
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: const _CustomFloatingActionButton(),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: const [
+              HeaderText(title: 'Select time', leftPadding: 15),
+              _Intervals(),
+              HeaderText(title: 'Name', leftPadding: 15),
+              _Names(),
+            ],
+          ),
         ),
       ),
     );
@@ -139,27 +84,36 @@ class NewTimerView extends StatelessWidget {
 }
 
 class _Intervals extends StatelessWidget {
-  const _Intervals({
-    Key? key,
-    required this.intervals,
-  }) : super(key: key);
-
-  final List<repo.Interval> intervals;
+  const _Intervals({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      shrinkWrap: true,
-      itemCount: intervals.length + 1,
-      itemBuilder: (context, index) {
-        if (index == intervals.length) {
-          return const _CreateIntervalButton();
-        } else {
-          return _IntervalItem(interval: intervals[index]);
-        }
-      },
+    return Container(
+      height: 103,
+      margin: const EdgeInsets.only(top: 20, bottom: 30),
+      child: BlocBuilder<NewTimerBloc, NewTimerState>(
+        builder: (context, state) {
+          if (state.intervalsStatus == IntervalsStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state.intervalsStatus == IntervalsStatus.success) {
+            return ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              shrinkWrap: true,
+              itemCount: state.intervals.length + 1,
+              itemBuilder: (context, index) {
+                if (index == state.intervals.length) {
+                  return const _CreateIntervalButton();
+                } else {
+                  return _IntervalItem(interval: state.intervals[index]);
+                }
+              },
+            );
+          }
+          return Container();
+        },
+      ),
     );
   }
 }
@@ -203,7 +157,7 @@ class _IntervalItem extends StatelessWidget {
                   width: 75,
                   height: 75,
                   decoration: const BoxDecoration(
-                    color: Color(0xFF111B3E),
+                    color: AppColors.darkBlue,
                     shape: BoxShape.circle,
                   ),
                   margin: const EdgeInsets.only(bottom: 10),
@@ -212,8 +166,8 @@ class _IntervalItem extends StatelessWidget {
                   painter: _CircleSectorPainter(
                     minutes: interval.minutes,
                     color: selectedInterval == interval
-                        ? const Color(0xFFFF82A1)
-                        : const Color(0xFF233266),
+                        ? AppColors.pink
+                        : AppColors.blue,
                   ),
                 ),
               ],
@@ -291,31 +245,36 @@ class _CreateIntervalButton extends StatelessWidget {
 }
 
 class _Names extends StatelessWidget {
-  const _Names({
-    Key? key,
-    required this.names,
-  }) : super(key: key);
-
-  final List<repo.Name> names;
+  const _Names({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      child: Wrap(
-        spacing: 10,
-        runSpacing: 15,
-        children: List.generate(
-          names.length + 1,
-          (index) {
-            if (index == names.length) {
-              return const _CreateNameButton();
-            } else {
-              return _NameItem(name: names[index]);
-            }
-          },
-        ),
-      ),
+    return BlocBuilder<NewTimerBloc, NewTimerState>(
+      builder: (context, state) {
+        if (state.namesStatus == NamesStatus.loading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (state.namesStatus == NamesStatus.success) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            child: Wrap(
+              spacing: 10,
+              runSpacing: 15,
+              children: List.generate(
+                state.names.length + 1,
+                (index) {
+                  if (index == state.names.length) {
+                    return const _CreateNameButton();
+                  } else {
+                    return _NameItem(name: state.names[index]);
+                  }
+                },
+              ),
+            ),
+          );
+        }
+        return Container();
+      },
     );
   }
 }
@@ -349,9 +308,7 @@ class _NameItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
-          color: name == selectedName
-              ? const Color(0xFFFF82A1)
-              : const Color(0xFF343D58),
+          color: name == selectedName ? AppColors.pink : AppColors.lightBlue,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Text(
@@ -394,6 +351,36 @@ class _CreateNameButton extends StatelessWidget {
         ),
         splashRadius: 25,
       ),
+    );
+  }
+}
+
+class _CustomFloatingActionButton extends StatelessWidget {
+  const _CustomFloatingActionButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<NewTimerBloc, NewTimerState>(
+      builder: (context, state) {
+        return FloatingActionButton.extended(
+          onPressed: () {
+            context.read<NewTimerBloc>().add(NewTimerCreated());
+          },
+          label: SizedBox(
+            width: MediaQuery.of(context).size.width - 70,
+            child: Center(
+              child: state.creationStatus == CreationStatus.loading
+                  ? const CircularProgressIndicator()
+                  : const Text(
+                      'Add to timer',
+                      style: TextStyle(fontSize: 16),
+                    ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

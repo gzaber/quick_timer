@@ -1,8 +1,9 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timers_repository/timers_repository.dart';
 
-import 'timers_overview/view/view.dart';
+import '../timers_overview/timers_overview.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -28,17 +29,7 @@ class AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          elevation: 0,
-          color: Colors.transparent,
-          titleSpacing: 0,
-        ),
-        scaffoldBackgroundColor: const Color(0xFF020E35),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Color(0xFFFF82A1),
-        ),
-      ),
+      theme: AppTheme.theme,
       title: 'Quick Timer',
       home: const TimersOverviewPage(),
     );
