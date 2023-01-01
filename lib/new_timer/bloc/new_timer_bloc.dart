@@ -54,7 +54,8 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     await Future.delayed(const Duration(seconds: 1));
     try {
       final names = await _timersRepository.readNames();
-      names.sort((a, b) => a.name[0].compareTo(b.name[0]));
+      names
+          .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
       emit(
         state.copyWith(
           namesStatus: NamesStatus.success,
