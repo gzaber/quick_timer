@@ -44,6 +44,8 @@ class TimersOverviewBloc
     await Future.delayed(const Duration(seconds: 1));
     try {
       final timers = await _timersRepository.readTimers();
+      timers.sort((a, b) =>
+          a.name.name.toLowerCase().compareTo(b.name.name.toLowerCase()));
       emit(
           state.copyWith(status: TimersOverviewStatus.success, timers: timers));
     } catch (e) {
