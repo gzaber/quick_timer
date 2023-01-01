@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:timers_repository/timers_repository.dart';
 
 import '../../new_timer/new_timer.dart' show NewTimerPage;
@@ -32,8 +33,6 @@ class TimersOverviewView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final player = AudioPlayer();
-
     return BlocListener<TimersOverviewBloc, TimersOverviewState>(
       listener: (context, state) async {
         if (state.status == TimersOverviewStatus.failure) {
@@ -43,7 +42,7 @@ class TimersOverviewView extends StatelessWidget {
                 const SnackBar(content: Text('Something went wrong')));
         }
         if (state.timerStatus == TimerStatus.completed) {
-          await player.play(AssetSource('sound.wav'));
+          await GetIt.I<AudioPlayer>().play(AssetSource('sound.wav'));
         }
       },
       child: Scaffold(
