@@ -44,10 +44,22 @@ class TimersOverviewBloc
     await Future.delayed(const Duration(seconds: 1));
     try {
       final timers = await _timersRepository.readTimers();
+      List<Timer> mostUsedTimers = const [];
+      if (timers.length > 3) {
+        var tmpTimers =
+            timers.where((timer) => timer.startupCounter > 0).toList();
+        tmpTimers.sort((a, b) => a.startupCounter.compareTo(b.startupCounter));
+        mostUsedTimers = tmpTimers.reversed.take(3).toList();
+        for (final timer in mostUsedTimers) {
+          timers.remove(timer);
+        }
+      }
       timers.sort((a, b) =>
           a.name.name.toLowerCase().compareTo(b.name.name.toLowerCase()));
-      emit(
-          state.copyWith(status: TimersOverviewStatus.success, timers: timers));
+      emit(state.copyWith(
+          status: TimersOverviewStatus.success,
+          timers: timers,
+          mostUsedTimers: mostUsedTimers));
     } catch (e) {
       emit(state.copyWith(status: TimersOverviewStatus.failure));
     }
@@ -71,7 +83,12 @@ class TimersOverviewBloc
   void _onTimerStarted(
     TimersOverviewTimerStarted event,
     Emitter<TimersOverviewState> emit,
-  ) {
+  ) async {
+    try {
+      await _timersRepository.incrementStartupCounter(event.timer);
+    } catch (e) {
+      emit(state.copyWith(status: TimersOverviewStatus.failure));
+    }
     emit(state.copyWith(
         timerStatus: TimerStatus.inProgress,
         countdownTimer: event.timer,
@@ -97,16 +114,21 @@ class TimersOverviewBloc
   void _onTimerCounted(
     _TimersOverviewTimerCounted event,
     Emitter<TimersOverviewState> emit,
-  ) {
+  ) async {
     if (event.secondsCounter > 0) {
       emit(state.copyWith(secondsCounter: event.secondsCounter));
     } else {
       emit(state.copyWith(timerStatus: TimerStatus.completed));
-      emit(state.copyWith(
-        timerStatus: TimerStatus.initial,
-        countdownTimer: null,
-        secondsCounter: 0,
-      ));
+      try {
+        await _timersRepository.incrementStartupCounter(state.countdownTimer!);
+        emit(state.copyWith(
+          timerStatus: TimerStatus.initial,
+          countdownTimer: null,
+          secondsCounter: 0,
+        ));
+      } catch (e) {
+        emit(state.copyWith(status: TimersOverviewStatus.failure));
+      }
     }
   }
 }

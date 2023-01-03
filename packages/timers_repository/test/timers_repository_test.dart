@@ -130,5 +130,20 @@ void main() {
         verify(() => timersApi.readTimers()).called(1);
       });
     });
+
+    group('incrementStartupCounter', () {
+      test('increments startupCounter', () {
+        final id = 'id';
+        final interval = Interval(minutes: 10);
+        final name = Name(name: 'name');
+        final timer = Timer(id: id, interval: interval, name: name);
+
+        when(() => timersApi.incrementStartupCounter(timer))
+            .thenAnswer((_) async {});
+
+        expect(timersRepository.incrementStartupCounter(timer), completes);
+        verify(() => timersApi.incrementStartupCounter(timer)).called(1);
+      });
+    });
   });
 }

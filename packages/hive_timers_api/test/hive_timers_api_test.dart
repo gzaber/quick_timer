@@ -50,61 +50,11 @@ void main() {
       });
     });
 
-    group('createName', () {
-      test('creates name', () {
-        when(() => mockBox.put(any(), any())).thenAnswer((_) async {});
-
-        expect(hiveTimersApi.createName('name'), completes);
-        verify(
-          () => mockBox.put(isNotEmpty, {"id": isNotEmpty, "name": "name"}),
-        ).called(1);
-      });
-    });
-
-    group('createTimer', () {
-      test('creates timer', () {
-        final interval = Interval(minutes: 10);
-        final name = Name(name: 'name');
-        when(() => mockBox.put(any(), any())).thenAnswer((_) async {});
-
-        expect(hiveTimersApi.createTimer(interval, name), completes);
-        verify(() => mockBox.put(isNotEmpty, {
-              "id": isNotEmpty,
-              "interval": {
-                "id": isNotEmpty,
-                "minutes": 10,
-              },
-              "name": {
-                "id": isNotEmpty,
-                "name": "name",
-              }
-            })).called(1);
-      });
-    });
-
     group('deleteInterval', () {
       test('deletes interval', () {
         when(() => mockBox.delete(any())).thenAnswer((_) async {});
 
         expect(hiveTimersApi.deleteInterval('id'), completes);
-        verify(() => mockBox.delete('id')).called(1);
-      });
-    });
-
-    group('deleteName', () {
-      test('deletes name', () {
-        when(() => mockBox.delete(any())).thenAnswer((_) async {});
-
-        expect(hiveTimersApi.deleteName('id'), completes);
-        verify(() => mockBox.delete('id')).called(1);
-      });
-    });
-
-    group('deleteTimer', () {
-      test('deletes timer', () {
-        when(() => mockBox.delete(any())).thenAnswer((_) async {});
-
-        expect(hiveTimersApi.deleteTimer('id'), completes);
         verify(() => mockBox.delete('id')).called(1);
       });
     });
@@ -128,6 +78,26 @@ void main() {
       });
     });
 
+    group('createName', () {
+      test('creates name', () {
+        when(() => mockBox.put(any(), any())).thenAnswer((_) async {});
+
+        expect(hiveTimersApi.createName('name'), completes);
+        verify(
+          () => mockBox.put(isNotEmpty, {"id": isNotEmpty, "name": "name"}),
+        ).called(1);
+      });
+    });
+
+    group('deleteName', () {
+      test('deletes name', () {
+        when(() => mockBox.delete(any())).thenAnswer((_) async {});
+
+        expect(hiveTimersApi.deleteName('id'), completes);
+        verify(() => mockBox.delete('id')).called(1);
+      });
+    });
+
     group('readNames', () {
       test('read all names', () async {
         final name1 = Name(name: 'name1');
@@ -144,6 +114,37 @@ void main() {
 
         expect(await hiveTimersApi.readNames(), []);
         verify(() => mockBox.values.toList()).called(1);
+      });
+    });
+
+    group('createTimer', () {
+      test('creates timer', () {
+        final interval = Interval(minutes: 10);
+        final name = Name(name: 'name');
+        when(() => mockBox.put(any(), any())).thenAnswer((_) async {});
+
+        expect(hiveTimersApi.createTimer(interval, name), completes);
+        verify(() => mockBox.put(isNotEmpty, {
+              "id": isNotEmpty,
+              "startupCounter": 0,
+              "interval": {
+                "id": isNotEmpty,
+                "minutes": 10,
+              },
+              "name": {
+                "id": isNotEmpty,
+                "name": "name",
+              }
+            })).called(1);
+      });
+    });
+
+    group('deleteTimer', () {
+      test('deletes timer', () {
+        when(() => mockBox.delete(any())).thenAnswer((_) async {});
+
+        expect(hiveTimersApi.deleteTimer('id'), completes);
+        verify(() => mockBox.delete('id')).called(1);
       });
     });
 
@@ -165,6 +166,31 @@ void main() {
 
         expect(await hiveTimersApi.readTimers(), []);
         verify(() => mockBox.values.toList()).called(1);
+      });
+    });
+
+    group('incrementStartupCounter', () {
+      test('increments startupCounter', () {
+        final id = 'id';
+        final interval = Interval(minutes: 10);
+        final name = Name(name: 'name');
+        final timer = Timer(id: id, interval: interval, name: name);
+
+        when(() => mockBox.put(any(), any())).thenAnswer((_) async {});
+
+        expect(hiveTimersApi.incrementStartupCounter(timer), completes);
+        verify(() => mockBox.put(isNotEmpty, {
+              "id": isNotEmpty,
+              "startupCounter": 1,
+              "interval": {
+                "id": isNotEmpty,
+                "minutes": 10,
+              },
+              "name": {
+                "id": isNotEmpty,
+                "name": "name",
+              }
+            })).called(1);
       });
     });
   });

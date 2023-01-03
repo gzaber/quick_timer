@@ -40,4 +40,8 @@ class TimersRepository {
   Future<List<Timer>> readTimers() async {
     return await _timersApi.readTimers();
   }
+
+  Future<void> incrementStartupCounter(Timer timer) async {
+    return await _timersApi.incrementStartupCounter(timer);
+  }
 }
