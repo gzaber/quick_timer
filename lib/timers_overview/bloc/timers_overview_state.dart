@@ -9,6 +9,7 @@ class TimersOverviewState extends Equatable {
     this.status = TimersOverviewStatus.initial,
     this.timerStatus = TimerStatus.initial,
     this.timers = const [],
+    this.mostUsedTimers = const [],
     this.countdownTimer,
     this.secondsCounter = 0,
   });
@@ -16,6 +17,7 @@ class TimersOverviewState extends Equatable {
   final TimersOverviewStatus status;
   final TimerStatus timerStatus;
   final List<Timer> timers;
+  final List<Timer> mostUsedTimers;
   final Timer? countdownTimer;
   final int secondsCounter;
 
@@ -27,6 +29,7 @@ class TimersOverviewState extends Equatable {
     TimersOverviewStatus? status,
     TimerStatus? timerStatus,
     List<Timer>? timers,
+    List<Timer>? mostUsedTimers,
     Timer? countdownTimer,
     int? secondsCounter,
   }) {
@@ -34,6 +37,7 @@ class TimersOverviewState extends Equatable {
       status: status ?? this.status,
       timerStatus: timerStatus ?? this.timerStatus,
       timers: timers ?? this.timers,
+      mostUsedTimers: mostUsedTimers ?? this.mostUsedTimers,
       countdownTimer: countdownTimer ?? this.countdownTimer,
       secondsCounter: secondsCounter ?? this.secondsCounter,
     );

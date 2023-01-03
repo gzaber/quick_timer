@@ -76,14 +76,70 @@ class _MostUsedTimers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
-      height: 100,
-      child: Center(
-        child: Text(
-          'No timers yet',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+    return BlocBuilder<TimersOverviewBloc, TimersOverviewState>(
+      builder: (context, state) {
+        if (state.status == TimersOverviewStatus.loading) {
+          return const SizedBox(
+            height: 80,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
+        if (state.status == TimersOverviewStatus.success) {
+          {
+            if (state.mostUsedTimers.isEmpty) {
+              return const SizedBox(
+                height: 80,
+                child: Center(
+                  child: Text(
+                    'No timers yet',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ),
+              );
+            } else {
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    child: _TimerItem(
+                      timer: state.mostUsedTimers[0],
+                      isMostUsed: true,
+                      color: AppColors.mostUsedFirst,
+                    ),
+                  ),
+                  if (state.mostUsedTimers.length > 1)
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: state.mostUsedTimers.length > 2
+                              ? _TimerItem(
+                                  timer: state.mostUsedTimers[2],
+                                  isMostUsed: true,
+                                  color: AppColors.mostUsedSecond,
+                                )
+                              : Container(),
+                        ),
+                        Expanded(
+                            flex: 2,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 15),
+                              child: _TimerItem(
+                                timer: state.mostUsedTimers[1],
+                                isMostUsed: true,
+                                color: AppColors.mostUsedThird,
+                              ),
+                            )),
+                      ],
+                    ),
+                  const SizedBox(height: 20),
+                ],
+              );
+            }
+          }
+        }
+        return Container();
+      },
     );
   }
 }
@@ -134,12 +190,20 @@ class _TimerItem extends StatelessWidget {
   const _TimerItem({
     Key? key,
     required this.timer,
+    this.isMostUsed = false,
+    this.color = AppColors.lightBlue,
   }) : super(key: key);
 
   final Timer timer;
+  final bool isMostUsed;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
+    final isInProgress = context.select((TimersOverviewBloc bloc) =>
+        bloc.state.timerStatus == TimerStatus.inProgress &&
+        bloc.state.countdownTimer == timer);
+
     return GestureDetector(
       onTap: () {
         context
@@ -157,8 +221,9 @@ class _TimerItem extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.all(15),
+        height: isMostUsed ? 95 : null,
         decoration: BoxDecoration(
-          color: const Color(0xFF343D58),
+          color: isInProgress ? AppColors.pink : color,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -168,13 +233,14 @@ class _TimerItem extends StatelessWidget {
             Text(
               timer.name.name,
               overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: isMostUsed ? Colors.black : Colors.white,
                 fontSize: 16,
+                fontWeight: isMostUsed ? FontWeight.bold : null,
               ),
             ),
-            _TimerResetButton(timer: timer),
-            _TimerDuration(timer: timer),
+            _TimerResetButton(timer: timer, isWhite: !isMostUsed),
+            _TimerDuration(timer: timer, isWhite: !isMostUsed),
           ],
         ),
       ),
@@ -186,9 +252,11 @@ class _TimerResetButton extends StatelessWidget {
   const _TimerResetButton({
     Key? key,
     required this.timer,
+    this.isWhite = true,
   }) : super(key: key);
 
   final Timer timer;
+  final bool isWhite;
 
   @override
   Widget build(BuildContext context) {
@@ -203,9 +271,9 @@ class _TimerResetButton extends StatelessWidget {
                     .read<TimersOverviewBloc>()
                     .add(TimersOverviewTimerReset());
               },
-              child: const Icon(
+              child: Icon(
                 Icons.pause,
-                color: Colors.white,
+                color: isWhite ? Colors.white : Colors.black,
                 size: 20,
               ),
             ),
@@ -221,9 +289,11 @@ class _TimerDuration extends StatelessWidget {
   const _TimerDuration({
     Key? key,
     required this.timer,
+    this.isWhite = true,
   }) : super(key: key);
 
   final Timer timer;
+  final bool isWhite;
 
   @override
   Widget build(BuildContext context) {
@@ -237,16 +307,16 @@ class _TimerDuration extends StatelessWidget {
               duration.inSeconds.remainder(60).toString().padLeft(2, '0');
           return Text(
             '$minutes:$seconds min',
-            style: const TextStyle(
-              color: Colors.white,
+            style: TextStyle(
+              color: isWhite ? Colors.white : Colors.black,
               fontSize: 15,
             ),
           );
         }
         return Text(
           '${timer.interval.minutes} min',
-          style: const TextStyle(
-            color: Colors.white,
+          style: TextStyle(
+            color: isWhite ? Colors.white : Colors.black,
             fontSize: 15,
           ),
         );
