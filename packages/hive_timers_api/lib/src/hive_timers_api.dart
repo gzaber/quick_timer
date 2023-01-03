@@ -25,30 +25,8 @@ class HiveTimersApi implements TimersApi {
   }
 
   @override
-  Future<void> createName(String timerName) async {
-    final name = Name(name: timerName);
-    await _namesBox.put(name.id, name.toJson());
-  }
-
-  @override
-  Future<void> createTimer(Interval interval, Name name) async {
-    final timer = Timer(interval: interval, name: name);
-    await _timersBox.put(timer.id, timer.toJson());
-  }
-
-  @override
   Future<void> deleteInterval(String id) async {
     await _intervalsBox.delete(id);
-  }
-
-  @override
-  Future<void> deleteName(String id) async {
-    await _namesBox.delete(id);
-  }
-
-  @override
-  Future<void> deleteTimer(String id) async {
-    await _timersBox.delete(id);
   }
 
   @override
@@ -61,11 +39,33 @@ class HiveTimersApi implements TimersApi {
   }
 
   @override
+  Future<void> createName(String timerName) async {
+    final name = Name(name: timerName);
+    await _namesBox.put(name.id, name.toJson());
+  }
+
+  @override
+  Future<void> deleteName(String id) async {
+    await _namesBox.delete(id);
+  }
+
+  @override
   Future<List<Name>> readNames() {
     final names = _namesBox.values
         .map((nameMap) => Name.fromJson(nameMap.cast<String, dynamic>()))
         .toList();
     return Future.value(names);
+  }
+
+  @override
+  Future<void> createTimer(Interval interval, Name name) async {
+    final timer = Timer(interval: interval, name: name);
+    await _timersBox.put(timer.id, timer.toJson());
+  }
+
+  @override
+  Future<void> deleteTimer(String id) async {
+    await _timersBox.delete(id);
   }
 
   @override
@@ -82,5 +82,11 @@ class HiveTimersApi implements TimersApi {
         )
         .toList();
     return Future.value(timers);
+  }
+
+  @override
+  Future<void> incrementStartupCounter(Timer timer) async {
+    await _timersBox.put(timer.id,
+        timer.copyWith(startupCounter: timer.startupCounter + 1).toJson());
   }
 }
