@@ -13,7 +13,6 @@ class DeleteItemDialog extends StatelessWidget {
   static Future<bool?> show(BuildContext context, {required String itemName}) {
     return showDialog<bool>(
       context: context,
-      useRootNavigator: false,
       builder: (_) => DeleteItemDialog(itemName: itemName),
     );
   }
@@ -33,14 +32,14 @@ class DeleteItemDialog extends StatelessWidget {
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop<bool>(context, false),
+          onPressed: () => Navigator.pop(context, false),
           child: const Text(
             'Cancel',
             style: TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
         TextButton(
-          onPressed: () => Navigator.pop<bool>(context, true),
+          onPressed: () => Navigator.pop(context, true),
           child: const Text(
             'OK',
             style: TextStyle(color: AppColors.pink, fontSize: 16),
