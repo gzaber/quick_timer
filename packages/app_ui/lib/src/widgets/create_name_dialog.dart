@@ -13,7 +13,6 @@ class CreateNameDialog extends StatefulWidget {
   static Future<String?> show(BuildContext context, {required String title}) {
     return showDialog<String>(
       context: context,
-      useRootNavigator: false,
       builder: (_) => CreateNameDialog(title: title),
     );
   }
