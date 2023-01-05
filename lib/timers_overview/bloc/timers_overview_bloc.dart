@@ -40,8 +40,6 @@ class TimersOverviewBloc
     Emitter<TimersOverviewState> emit,
   ) async {
     emit(state.copyWith(status: TimersOverviewStatus.loading));
-    // TODO delete delay
-    await Future.delayed(const Duration(seconds: 1));
     try {
       final timers = await _timersRepository.readTimers();
       List<Timer> mostUsedTimers = const [];
@@ -70,8 +68,6 @@ class TimersOverviewBloc
     Emitter<TimersOverviewState> emit,
   ) async {
     emit(state.copyWith(status: TimersOverviewStatus.loading));
-    // TODO delete delay
-    await Future.delayed(const Duration(seconds: 1));
     try {
       await _timersRepository.deleteTimer(event.timer.id);
       emit(state.copyWith(status: TimersOverviewStatus.success));
