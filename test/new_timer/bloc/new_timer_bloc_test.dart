@@ -48,7 +48,7 @@ void main() {
 
     group('NewTimerLoadIntervalsRequested', () {
       blocTest<NewTimerBloc, NewTimerState>(
-        'emits states with success status and intervals',
+        'emits state with success status and intervals',
         setUp: () {
           when(() => timersRepository.readIntervals())
               .thenAnswer((_) async => intervals);
@@ -66,7 +66,7 @@ void main() {
       );
 
       blocTest<NewTimerBloc, NewTimerState>(
-        'emits states with failure status',
+        'emits state with failure status',
         setUp: () {
           when(() => timersRepository.readIntervals()).thenThrow(Exception());
         },
@@ -84,7 +84,7 @@ void main() {
 
     group('NewTimerLoadNamesRequested', () {
       blocTest<NewTimerBloc, NewTimerState>(
-        'emits states with success status and names',
+        'emits state with success status and names',
         setUp: () {
           when(() => timersRepository.readNames())
               .thenAnswer((_) async => names);
@@ -101,7 +101,7 @@ void main() {
       );
 
       blocTest<NewTimerBloc, NewTimerState>(
-        'emits states with failure status',
+        'emits state with failure status',
         setUp: () {
           when(() => timersRepository.readNames()).thenThrow(Exception());
         },
