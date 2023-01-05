@@ -22,8 +22,14 @@ class TimersOverviewState extends Equatable {
   final int secondsCounter;
 
   @override
-  List<Object?> get props =>
-      [status, timerStatus, timers, countdownTimer, secondsCounter];
+  List<Object?> get props => [
+        status,
+        timerStatus,
+        timers,
+        mostUsedTimers,
+        countdownTimer,
+        secondsCounter
+      ];
 
   TimersOverviewState copyWith({
     TimersOverviewStatus? status,

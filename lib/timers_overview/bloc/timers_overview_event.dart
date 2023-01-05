@@ -29,8 +29,8 @@ class TimersOverviewTimerStarted extends TimersOverviewEvent {
 
 class TimersOverviewTimerReset extends TimersOverviewEvent {}
 
-class _TimersOverviewTimerCounted extends TimersOverviewEvent {
-  const _TimersOverviewTimerCounted(this.secondsCounter);
+class TimersOverviewTimerCounted extends TimersOverviewEvent {
+  const TimersOverviewTimerCounted(this.secondsCounter);
 
   final int secondsCounter;
   @override
