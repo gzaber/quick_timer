@@ -21,7 +21,7 @@ class TimersOverviewBloc
     on<TimersOverviewTimerDeleted>(_onTimerDeleted);
     on<TimersOverviewTimerStarted>(_onTimerStarted);
     on<TimersOverviewTimerReset>(_onTimerReset);
-    on<_TimersOverviewTimerCounted>(_onTimerCounted);
+    on<TimersOverviewTimerCounted>(_onTimerCounted);
   }
 
   final TimersRepository _timersRepository;
@@ -80,11 +80,6 @@ class TimersOverviewBloc
     TimersOverviewTimerStarted event,
     Emitter<TimersOverviewState> emit,
   ) async {
-    try {
-      await _timersRepository.incrementStartupCounter(event.timer);
-    } catch (e) {
-      emit(state.copyWith(status: TimersOverviewStatus.failure));
-    }
     emit(state.copyWith(
         timerStatus: TimerStatus.inProgress,
         countdownTimer: event.timer,
@@ -92,7 +87,7 @@ class TimersOverviewBloc
     _counterSubscription?.cancel();
     _counterSubscription = _counter
         .countdown(seconds: event.timer.interval.minutes * 60)
-        .listen((counter) => add(_TimersOverviewTimerCounted(counter)));
+        .listen((counter) => add(TimersOverviewTimerCounted(counter)));
   }
 
   void _onTimerReset(
@@ -102,26 +97,24 @@ class TimersOverviewBloc
     _counterSubscription?.cancel();
     emit(state.copyWith(
       timerStatus: TimerStatus.initial,
-      countdownTimer: null,
       secondsCounter: 0,
     ));
   }
 
   void _onTimerCounted(
-    _TimersOverviewTimerCounted event,
+    TimersOverviewTimerCounted event,
     Emitter<TimersOverviewState> emit,
   ) async {
     if (event.secondsCounter > 0) {
       emit(state.copyWith(secondsCounter: event.secondsCounter));
     } else {
       emit(state.copyWith(timerStatus: TimerStatus.completed));
+      emit(state.copyWith(
+        timerStatus: TimerStatus.initial,
+        secondsCounter: 0,
+      ));
       try {
         await _timersRepository.incrementStartupCounter(state.countdownTimer!);
-        emit(state.copyWith(
-          timerStatus: TimerStatus.initial,
-          countdownTimer: null,
-          secondsCounter: 0,
-        ));
       } catch (e) {
         emit(state.copyWith(status: TimersOverviewStatus.failure));
       }
