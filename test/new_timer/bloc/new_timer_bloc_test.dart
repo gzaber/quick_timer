@@ -33,14 +33,14 @@ void main() {
     group('constructor', () {
       test('works properly', () {
         expect(
-          () => NewTimerBloc(timersRepository: timersRepository),
+          () => buildBloc(),
           returnsNormally,
         );
       });
 
       test('has correct initial state', () {
         expect(
-          NewTimerBloc(timersRepository: timersRepository).state,
+          buildBloc().state,
           equals(const NewTimerState()),
         );
       });
