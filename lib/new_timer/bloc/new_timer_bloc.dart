@@ -29,8 +29,6 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(intervalsStatus: IntervalsStatus.loading));
-    // TODO delete delay
-    await Future.delayed(const Duration(seconds: 1));
     try {
       final intervals = await _timersRepository.readIntervals();
       intervals.sort((a, b) => a.minutes.compareTo(b.minutes));
@@ -50,8 +48,6 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(namesStatus: NamesStatus.loading));
-    // TODO delete delay
-    await Future.delayed(const Duration(seconds: 1));
     try {
       final names = await _timersRepository.readNames();
       names
@@ -72,8 +68,6 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(creationStatus: CreationStatus.loading));
-    // TODO delete delay
-    await Future.delayed(const Duration(seconds: 1));
     if (state.selectedInterval == null || state.selectedName == null) {
       emit(state.copyWith(creationStatus: CreationStatus.unselected));
       emit(state.copyWith(creationStatus: CreationStatus.initial));
@@ -93,8 +87,6 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(intervalsStatus: IntervalsStatus.loading));
-    // TODO delete delay
-    await Future.delayed(const Duration(seconds: 1));
     try {
       await _timersRepository.createInterval(event.minutes);
       emit(state.copyWith(intervalsStatus: IntervalsStatus.success));
@@ -108,8 +100,6 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(intervalsStatus: IntervalsStatus.loading));
-    // TODO delete delay
-    await Future.delayed(const Duration(seconds: 1));
     try {
       await _timersRepository.deleteInterval(event.interval.id);
       emit(state.copyWith(intervalsStatus: IntervalsStatus.success));
@@ -130,8 +120,6 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(namesStatus: NamesStatus.loading));
-    // TODO delete delay
-    await Future.delayed(const Duration(seconds: 1));
     try {
       await _timersRepository.createName(event.name);
       emit(state.copyWith(namesStatus: NamesStatus.success));
@@ -145,8 +133,6 @@ class NewTimerBloc extends Bloc<NewTimerEvent, NewTimerState> {
     Emitter<NewTimerState> emit,
   ) async {
     emit(state.copyWith(namesStatus: NamesStatus.loading));
-    // TODO delete delay
-    await Future.delayed(const Duration(seconds: 1));
     try {
       await _timersRepository.deleteName(event.name.id);
       emit(state.copyWith(namesStatus: NamesStatus.success));
