@@ -13,6 +13,7 @@ class DeleteItemDialog extends StatelessWidget {
   static Future<bool?> show(BuildContext context, {required String itemName}) {
     return showDialog<bool>(
       context: context,
+      useRootNavigator: false,
       builder: (_) => DeleteItemDialog(itemName: itemName),
     );
   }

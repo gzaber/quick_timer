@@ -10,9 +10,7 @@ import '../counter.dart';
 import '../timers_overview.dart';
 
 class TimersOverviewPage extends StatelessWidget {
-  const TimersOverviewPage({
-    Key? key,
-  }) : super(key: key);
+  const TimersOverviewPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +25,7 @@ class TimersOverviewPage extends StatelessWidget {
 }
 
 class TimersOverviewView extends StatelessWidget {
-  const TimersOverviewView({
-    Key? key,
-  }) : super(key: key);
+  const TimersOverviewView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -326,9 +322,7 @@ class _TimerDuration extends StatelessWidget {
 }
 
 class _CustomFloatingActionButton extends StatelessWidget {
-  const _CustomFloatingActionButton({
-    Key? key,
-  }) : super(key: key);
+  const _CustomFloatingActionButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -337,7 +331,7 @@ class _CustomFloatingActionButton extends StatelessWidget {
       height: 65,
       child: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, NewTimerPage.route()).then(
+          Navigator.push<void>(context, NewTimerPage.route()).then(
             (_) => context
                 .read<TimersOverviewBloc>()
                 .add(TimersOverviewLoadTimersRequested()),
