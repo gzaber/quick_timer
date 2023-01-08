@@ -6,7 +6,11 @@ on:
       - master
 
 jobs:
+  test_packages:
+    uses: ./.github/workflows/app_ui.yaml
+
   flutter_test:
+    needs: [test_packages]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
