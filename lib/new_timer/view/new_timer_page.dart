@@ -57,10 +57,10 @@ class NewTimerView extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('New Timer'),
+          title: const Text('New timer'),
           toolbarHeight: 107,
           leading: IconButton(
-            onPressed: () => Navigator.pop<void>(context),
+            onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back_ios),
             splashRadius: 25,
           ),
@@ -212,9 +212,7 @@ class _CircleSectorPainter extends CustomPainter {
 }
 
 class _CreateIntervalButton extends StatelessWidget {
-  const _CreateIntervalButton({
-    Key? key,
-  }) : super(key: key);
+  const _CreateIntervalButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -222,6 +220,7 @@ class _CreateIntervalButton extends StatelessWidget {
       children: [
         const SizedBox(height: 15),
         IconButton(
+          key: const Key('newTimerPageCreateIntervalIconButtonKey'),
           onPressed: () {
             CreateIntervalDialog.show(context, title: 'Select minutes').then(
               (value) {
@@ -324,15 +323,14 @@ class _NameItem extends StatelessWidget {
 }
 
 class _CreateNameButton extends StatelessWidget {
-  const _CreateNameButton({
-    Key? key,
-  }) : super(key: key);
+  const _CreateNameButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 42,
       child: IconButton(
+        key: const Key('newTimerPageCreateNameIconButtonKey'),
         onPressed: () {
           CreateNameDialog.show(context, title: 'Create name').then(
             (value) {
@@ -356,9 +354,7 @@ class _CreateNameButton extends StatelessWidget {
 }
 
 class _CustomFloatingActionButton extends StatelessWidget {
-  const _CustomFloatingActionButton({
-    Key? key,
-  }) : super(key: key);
+  const _CustomFloatingActionButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

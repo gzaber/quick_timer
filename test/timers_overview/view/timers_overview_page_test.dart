@@ -285,7 +285,7 @@ void main() {
       verify(() => audioPlayer.play(any())).called(1);
     });
 
-    testWidgets('navigates to delete dialog when timer is long pressed',
+    testWidgets('navigates to DeleteItemDialog when timer is long pressed',
         (tester) async {
       final navigator = MockNavigator();
       when(() => navigator.push<bool>(any(that: isRoute<bool>())))

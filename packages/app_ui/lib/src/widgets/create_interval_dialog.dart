@@ -13,6 +13,7 @@ class CreateIntervalDialog extends StatefulWidget {
   static Future<int?> show(BuildContext context, {required String title}) {
     return showDialog<int>(
       context: context,
+      useRootNavigator: false,
       builder: (_) => CreateIntervalDialog(title: title),
     );
   }
