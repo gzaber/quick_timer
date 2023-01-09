@@ -2,9 +2,6 @@ name: hive_timers_api
 
 on:
   pull_request:
-    paths:
-      - "packages/hive_timers_api/**"
-      - ".github/workflows/hive_timers_api.yaml"
     branches:
       - master
 

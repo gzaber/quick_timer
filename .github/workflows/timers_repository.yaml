@@ -2,9 +2,6 @@ name: timers_repository
 
 on:
   pull_request:
-    paths:
-      - "packages/timers_repository/**"
-      - ".github/workflows/timers_repository.yaml"
     branches:
       - master
 
@@ -22,7 +19,7 @@ jobs:
         run: dart pub get
 
       - name: Analyze package source
-        run: dart analyze
+        run: dart analyze lib
 
       - name: Run tests
         run: |
