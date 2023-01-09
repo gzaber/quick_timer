@@ -27,9 +27,6 @@ jobs:
       - name: Run tests
         run: flutter test --coverage
 
-      - name: Run tests in app_ui package
-        run: flutter test --coverage packages/app_ui/
-
       - name: Upload coverage to codecov
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov

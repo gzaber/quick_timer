@@ -10,6 +10,9 @@ on:
 
 jobs:
   flutter_test:
+    defaults:
+      run:
+        working-directory: packages/app_ui
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
