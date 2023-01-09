@@ -10,6 +10,9 @@ on:
 
 jobs:
   flutter_test:
+    defaults:
+      run:
+        working-directory: packages/app_ui
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -31,11 +34,7 @@ jobs:
         run: flutter test --coverage
 
       - name: Upload coverage to codecov
-        # run: |
-        #   curl -Os https://uploader.codecov.io/latest/linux/codecov
-        #   chmod +x codecov
-        #   ./codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          name: app_ui
+        run: |
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov
