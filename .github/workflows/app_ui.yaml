@@ -31,7 +31,11 @@ jobs:
         run: flutter test --coverage
 
       - name: Upload coverage to codecov
-        run: |
-          curl -Os https://uploader.codecov.io/latest/linux/codecov
-          chmod +x codecov
-          ./codecov
+        # run: |
+        #   curl -Os https://uploader.codecov.io/latest/linux/codecov
+        #   chmod +x codecov
+        #   ./codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          name: app_ui
