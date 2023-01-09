@@ -2,6 +2,9 @@ name: timers_api
 
 on:
   pull_request:
+    paths:
+      - "packages/timers_api/**"
+      - ".github/workflows/timers_api.yaml"
     branches:
       - master
 

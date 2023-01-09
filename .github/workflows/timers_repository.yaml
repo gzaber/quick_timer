@@ -2,6 +2,9 @@ name: timers_repository
 
 on:
   pull_request:
+    paths:
+      - "packages/timers_repository/**"
+      - ".github/workflows/timers_repository.yaml"
     branches:
       - master
 
