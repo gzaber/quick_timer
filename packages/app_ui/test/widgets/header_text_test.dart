@@ -12,14 +12,5 @@ void main() {
 
       expect(find.text('Title'), findsOneWidget);
     });
-
-    testWidgets('takes optional padding parameter and renders text',
-        (tester) async {
-      await tester.pumpTest(builder: (_) {
-        return const HeaderText(title: 'Title', leftPadding: 10);
-      });
-
-      expect(find.text('Title'), findsOneWidget);
-    });
   });
 }

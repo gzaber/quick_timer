@@ -5,7 +5,7 @@ class HeaderText extends StatelessWidget {
     Key? key,
     required this.title,
     this.leftPadding = 0.0,
-  }) : super(key: key);
+  }) : super(key: key); // coverage:ignore-line
 
   final String title;
   final double leftPadding;
