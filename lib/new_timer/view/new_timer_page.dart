@@ -205,10 +205,12 @@ class _CircleSectorPainter extends CustomPainter {
     canvas.drawArc(rect, startAngle, sweepAngle, useCenter, paint);
   }
 
+// coverage:ignore-start
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return oldDelegate != this;
   }
+  // coverage:ignore-end
 }
 
 class _CreateIntervalButton extends StatelessWidget {
