@@ -21,16 +21,10 @@ https://dribbble.com/shots/6623316-Quick-Timer
 [<img alt="timers overview page" width="250px" src=".screenshots/timers_overview_page.png" />](.screenshots/timers_overview_page.png)
 &nbsp;
 [<img alt="new timer page" width="250px" src=".screenshots/new_timer_page.png" />](.screenshots/new_timer_page.png)
-&nbsp;
-[<img alt="create interval" width="250px" src=".screenshots/create_interval.png" />](.screenshots/create_interval.png)
-&nbsp;
-[<img alt="create name" width="250px" src=".screenshots/create_name.png" />](.screenshots/create_name.png)
-&nbsp;
-[<img alt="delete timer" width="250px" src=".screenshots/delete_timer.png" />](.screenshots/delete_timer.png)
-&nbsp;
-[<img alt="running timer" width="250px" src=".screenshots/running_timer.png" />](.screenshots/running_timer.png)
 
-[<img alt="recording" width="250px" src=".screenshots/recording.gif" />](.screenshots/recording.gif)
+[<img alt="recording timers overview page" width="250px" src=".screenshots/recording1.gif" />](.screenshots/recording1.gif)
+&nbsp;
+[<img alt="recording new timer page" width="250px" src=".screenshots/recording2.gif" />](.screenshots/recording2.gif)
 
 ## Features
 
