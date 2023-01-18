@@ -4,4 +4,81 @@
 
 # quick_timer
 
-in progress...
+A simple timer app based on the following concept:  
+https://dribbble.com/shots/6623316-Quick-Timer
+
+## Table of contents
+
+- [Screenshots](#screenshots)
+- [Features](#features)
+- [Packages used](#packages-used)
+- [Setup](#setup)
+- [Test](#test)
+- [Run](#run)
+
+## Screenshots
+
+[<img alt="timers overview page" width="250px" src=".screenshots/timers_overview_page.png" />](.screenshots/timers_overview_page.png)
+&nbsp;
+[<img alt="new timer page" width="250px" src=".screenshots/new_timer_page.png" />](.screenshots/new_timer_page.png)
+&nbsp;
+[<img alt="create interval" width="250px" src=".screenshots/create_interval.png" />](.screenshots/create_interval.png)
+&nbsp;
+[<img alt="create name" width="250px" src=".screenshots/create_name.png" />](.screenshots/create_name.png)
+&nbsp;
+[<img alt="delete timer" width="250px" src=".screenshots/delete_timer.png" />](.screenshots/delete_timer.png)
+&nbsp;
+[<img alt="running timer" width="250px" src=".screenshots/running_timer.png" />](.screenshots/running_timer.png)
+
+[<img alt="recording" width="250px" src=".screenshots/recording.gif" />](.screenshots/recording.gif)
+
+## Features
+
+- run timer
+- play sound when timer completed
+- create / delete timer
+- create / delete interval in minutes
+- create / delete name
+
+## Packages used
+
+- audioplayers
+- bloc
+- equatable
+- get_it
+- hive
+- json_annotation
+- uuid
+
+## Setup
+
+Clone or download this repository.  
+Use the following command to install all the dependencies:
+
+```
+$ flutter pub get
+```
+
+## Test
+
+Run the tests using your IDE or using the following command:
+
+```
+$ flutter test --coverage
+```
+
+For local Flutter packages run above command in package root directory.  
+For local Dart packages run the following commands in package root directory:
+
+```
+$ dart pub global activate coverage
+$ dart pub global run coverage:test_with_coverage
+```
+
+## Run
+
+Run the application using your IDE or using the following command:
+
+```
+$ flutter run
+```
