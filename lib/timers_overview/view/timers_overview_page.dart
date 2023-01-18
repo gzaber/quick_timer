@@ -166,7 +166,7 @@ class _Timers extends StatelessWidget {
               childAspectRatio: 1.15,
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 20, bottom: 90),
               children: List.generate(
                 state.timers.length,
                 (index) {
