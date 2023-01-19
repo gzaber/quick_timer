@@ -12,7 +12,7 @@ class TestTimersApi implements TimersApi {
 
 void main() {
   group('TimersApi', () {
-    test('can be constructed DELETE THIS', () {
+    test('can be constructed', () {
       expect(TestTimersApi.new, returnsNormally);
     });
   });
