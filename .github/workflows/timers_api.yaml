@@ -7,16 +7,22 @@ on:
       - ".github/workflows/timers_api.yaml"
     branches:
       - master
+  push:
+    branches:
+      - master
 
 jobs:
-  dart_test:
+  dart_tests:
     defaults:
       run:
         working-directory: packages/timers_api
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: dart-lang/setup-dart@v1.3
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: Install Dart
+        uses: dart-lang/setup-dart@v1.3
 
       - name: Install dependencies
         run: dart pub get
