@@ -2,6 +2,12 @@ name: timers_repository
 
 on:
   pull_request:
+    paths:
+      - "packages/timers_repository/**"
+      - ".github/workflows/timers_repository.yaml"
+    branches:
+      - master
+  push:
     branches:
       - master
 
@@ -30,6 +36,7 @@ jobs:
           dart pub global run coverage:test_with_coverage
 
       - name: Upload coverage to codecov
+        if: github.event_name == 'push'
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov

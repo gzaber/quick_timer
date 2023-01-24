@@ -1,9 +1,6 @@
 name: main
 
-on:
-  pull_request:
-    branches:
-      - master
+on: [pull_request, push]
 
 jobs:
   flutter_tests:
@@ -25,12 +22,14 @@ jobs:
         run: flutter test --coverage
 
       - name: Upload coverage to codecov
+        if: github.event_name == 'push'
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
           ./codecov
 
   build_android:
+    if: github.event_name == 'pull_request'
     needs: [flutter_tests]
     runs-on: ubuntu-latest
     steps:
@@ -47,6 +46,7 @@ jobs:
         run: flutter build apk
 
   build_ios:
+    if: github.event_name == 'pull_request'
     needs: [flutter_tests]
     runs-on: macos-latest
     steps:

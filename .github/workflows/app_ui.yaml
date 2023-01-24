@@ -2,6 +2,12 @@ name: app_ui
 
 on:
   pull_request:
+    paths:
+      - "packages/app_ui/**"
+      - ".github/workflows/app_ui.yaml"
+    branches:
+      - master
+  push:
     branches:
       - master
 
@@ -28,6 +34,7 @@ jobs:
         run: flutter test --coverage
 
       - name: Upload coverage to codecov
+        if: github.event_name == 'push'
         run: |
           curl -Os https://uploader.codecov.io/latest/linux/codecov
           chmod +x codecov
