@@ -33,6 +33,7 @@ https://dribbble.com/shots/6623316-Quick-Timer
 - create / delete timer
 - create / delete interval in minutes
 - create / delete name
+- supported locales: en, pl
 
 ## Packages used
 
