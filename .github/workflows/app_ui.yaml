@@ -7,9 +7,6 @@ on:
       - ".github/workflows/app_ui.yaml"
     branches:
       - master
-  push:
-    branches:
-      - master
 
 jobs:
   flutter_tests:

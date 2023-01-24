@@ -7,9 +7,6 @@ on:
       - ".github/workflows/timers_api.yaml"
     branches:
       - master
-  push:
-    branches:
-      - master
 
 jobs:
   dart_tests:
