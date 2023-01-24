@@ -2,9 +2,6 @@ name: app_ui
 
 on:
   pull_request:
-    paths:
-      - "packages/app_ui/**"
-      - ".github/workflows/app_ui.yaml"
     branches:
       - master
 
