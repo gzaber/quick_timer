@@ -1,0 +1,25 @@
+{
+    "timersOverviewAppBarTitle": "QuickTimer",
+    "timersOverviewFailureMessage": "Coś poszło nie tak",
+    "timersOverviewMostUsedTimersHeader": "Najczęściej używane timery",
+    "timersOverviewOtherTimersHeader": "Pozostałe timery",
+    "timersOverviewNoTimersInfo": "Brak timerów",
+
+    "newTimerAppBarTitle": "Nowy timer",
+    "newTimerFailureMessage": "Coś poszło nie tak",
+    "newTimerUnselectedFailureMessage": "Interwał oraz nazwa powinny zostać wybrane",
+    "newTimerIntervalsHeader": "Wybierz czas",
+    "newTimerNamesHeader": "Nazwa",
+    "newTimerAddTimerButtonText": "Dodaj timer",
+
+    "createIntervalDialogTitle": "Wybierz minuty",
+    "createNameDialogTitle": "Utwórz nazwę",
+    "createNameDialogEmptyNameFailure": "Nazwa nie może być pusta",
+    "deleteItemDialogTitle": "Usuń",
+    "deleteItemDialogIntervalContent": "Usunąć interwał?",
+    "deleteItemDialogNameContent": "Usunąć nazwę?",
+    "deleteItemDialogTimerContent": "Usunąć timer?",
+    "dialogSaveButtonText": "Zapisz",
+    "dialogCancelButtonText": "Anuluj",
+    "dialogOkButtonText": "OK"
+}

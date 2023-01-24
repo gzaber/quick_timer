@@ -2,6 +2,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart' hide Interval;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mockingjay/mockingjay.dart';
@@ -23,6 +25,7 @@ extension WidgetTesterX on WidgetTester {
                   navigator: navigator,
                   child: const TimersOverviewView(),
                 ),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
         ),
       ),
     );
@@ -79,6 +82,7 @@ void main() {
           value: timersRepository,
           child: const MaterialApp(
             home: TimersOverviewPage(),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
           ),
         ),
       );
@@ -89,6 +93,7 @@ void main() {
   });
 
   group('TimersOverviewView', () {
+    final l10n = AppLocalizationsEn();
     late TimersOverviewBloc timersOverviewBloc;
 
     setUp(() {
@@ -107,7 +112,8 @@ void main() {
 
       expect(
           find.descendant(
-              of: find.byType(AppBar), matching: find.text('QuickTimer')),
+              of: find.byType(AppBar),
+              matching: find.text(l10n.timersOverviewAppBarTitle)),
           findsOneWidget);
     });
 
@@ -117,8 +123,9 @@ void main() {
 
       await tester.pumpApp(timersOverviewBloc: timersOverviewBloc);
 
-      expect(find.text('Most used timers'), findsOneWidget);
-      expect(find.text('Other timers'), findsOneWidget);
+      expect(
+          find.text(l10n.timersOverviewMostUsedTimersHeader), findsOneWidget);
+      expect(find.text(l10n.timersOverviewOtherTimersHeader), findsOneWidget);
     });
 
     testWidgets('renders FloatingActionButton with add icon', (tester) async {
@@ -150,7 +157,7 @@ void main() {
 
       await tester.pumpApp(timersOverviewBloc: timersOverviewBloc);
 
-      expect(find.text('No timers yet'), findsNWidgets(2));
+      expect(find.text(l10n.timersOverviewNoTimersInfo), findsNWidgets(2));
     });
 
     testWidgets('renders 2 most used timers', (tester) async {
@@ -226,7 +233,7 @@ void main() {
       expect(
           find.descendant(
               of: find.byType(SnackBar),
-              matching: find.text('Something went wrong')),
+              matching: find.text(l10n.timersOverviewFailureMessage)),
           findsOneWidget);
     });
 

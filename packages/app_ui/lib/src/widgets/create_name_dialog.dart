@@ -6,15 +6,32 @@ class CreateNameDialog extends StatefulWidget {
   const CreateNameDialog({
     Key? key,
     required this.title,
+    required this.confirmButtonText,
+    required this.declineButtonText,
+    required this.emptyNameFailureText,
   }) : super(key: key);
 
   final String title;
+  final String confirmButtonText;
+  final String declineButtonText;
+  final String emptyNameFailureText;
 
-  static Future<String?> show(BuildContext context, {required String title}) {
+  static Future<String?> show(
+    BuildContext context, {
+    required String title,
+    required String confirmButtonText,
+    required String declineButtonText,
+    required String emptyNameFailureText,
+  }) {
     return showDialog<String>(
       context: context,
       useRootNavigator: false,
-      builder: (_) => CreateNameDialog(title: title),
+      builder: (_) => CreateNameDialog(
+        title: title,
+        confirmButtonText: confirmButtonText,
+        declineButtonText: declineButtonText,
+        emptyNameFailureText: emptyNameFailureText,
+      ),
     );
   }
 
@@ -41,7 +58,7 @@ class _CreateNameDialogState extends State<CreateNameDialog> {
           controller: nameController,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Name cannot be empty';
+              return widget.emptyNameFailureText;
             }
             return null;
           },
@@ -52,9 +69,9 @@ class _CreateNameDialogState extends State<CreateNameDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, null),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(color: AppColors.pink, fontSize: 16),
+          child: Text(
+            widget.declineButtonText,
+            style: const TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
         TextButton(
@@ -63,9 +80,9 @@ class _CreateNameDialogState extends State<CreateNameDialog> {
               Navigator.pop(context, nameController.text);
             }
           },
-          child: const Text(
-            'Save',
-            style: TextStyle(color: AppColors.pink, fontSize: 16),
+          child: Text(
+            widget.confirmButtonText,
+            style: const TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
       ],

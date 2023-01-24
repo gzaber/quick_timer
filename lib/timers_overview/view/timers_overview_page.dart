@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:timers_repository/timers_repository.dart';
 
@@ -29,13 +30,15 @@ class TimersOverviewView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocListener<TimersOverviewBloc, TimersOverviewState>(
       listener: (context, state) async {
         if (state.status == TimersOverviewStatus.failure) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-                const SnackBar(content: Text('Something went wrong')));
+                SnackBar(content: Text(l10n.timersOverviewFailureMessage)));
         }
         if (state.timerStatus == TimerStatus.completed) {
           await GetIt.I<AudioPlayer>().play(AssetSource('sound.wav'));
@@ -43,7 +46,7 @@ class TimersOverviewView extends StatelessWidget {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('QuickTimer'),
+          title: Text(l10n.timersOverviewAppBarTitle),
           centerTitle: true,
         ),
         body: Padding(
@@ -51,11 +54,13 @@ class TimersOverviewView extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                HeaderText(title: 'Most used timers'),
-                _MostUsedTimers(),
-                HeaderText(title: 'Other timers'),
-                _Timers(),
+              children: [
+                HeaderText(
+                  title: l10n.timersOverviewMostUsedTimersHeader,
+                ),
+                const _MostUsedTimers(),
+                HeaderText(title: l10n.timersOverviewOtherTimersHeader),
+                const _Timers(),
               ],
             ),
           ),
@@ -72,6 +77,8 @@ class _MostUsedTimers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<TimersOverviewBloc, TimersOverviewState>(
       builder: (context, state) {
         if (state.status == TimersOverviewStatus.loading) {
@@ -83,12 +90,12 @@ class _MostUsedTimers extends StatelessWidget {
         if (state.status == TimersOverviewStatus.success) {
           {
             if (state.mostUsedTimers.isEmpty) {
-              return const SizedBox(
+              return SizedBox(
                 height: 80,
                 child: Center(
                   child: Text(
-                    'No timers yet',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    l10n.timersOverviewNoTimersInfo,
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
               );
@@ -145,6 +152,8 @@ class _Timers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<TimersOverviewBloc, TimersOverviewState>(
       builder: (context, state) {
         if (state.status == TimersOverviewStatus.loading) {
@@ -152,10 +161,10 @@ class _Timers extends StatelessWidget {
         }
         if (state.status == TimersOverviewStatus.success) {
           if (state.timers.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                'No timers yet',
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                l10n.timersOverviewNoTimersInfo,
+                style: const TextStyle(color: Colors.white, fontSize: 16),
               ),
             );
           } else {
@@ -196,6 +205,7 @@ class _TimerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isInProgress = context.select((TimersOverviewBloc bloc) =>
         bloc.state.timerStatus == TimerStatus.inProgress &&
         bloc.state.countdownTimer == timer);
@@ -207,7 +217,13 @@ class _TimerItem extends StatelessWidget {
             .add(TimersOverviewTimerStarted(timer: timer));
       },
       onLongPress: () {
-        DeleteItemDialog.show(context, itemName: 'timer').then((value) {
+        DeleteItemDialog.show(
+          context,
+          title: l10n.deleteItemDialogTitle,
+          contentText: l10n.deleteItemDialogTimerContent,
+          confirmButtonText: l10n.dialogOkButtonText,
+          declineButtonText: l10n.dialogCancelButtonText,
+        ).then((value) {
           if (value == true) {
             context.read<TimersOverviewBloc>()
               ..add(TimersOverviewTimerDeleted(timer: timer))

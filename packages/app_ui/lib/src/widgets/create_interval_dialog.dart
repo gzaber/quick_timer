@@ -6,15 +6,28 @@ class CreateIntervalDialog extends StatefulWidget {
   const CreateIntervalDialog({
     Key? key,
     required this.title,
+    required this.confirmButtonText,
+    required this.declineButtonText,
   }) : super(key: key);
 
   final String title;
+  final String confirmButtonText;
+  final String declineButtonText;
 
-  static Future<int?> show(BuildContext context, {required String title}) {
+  static Future<int?> show(
+    BuildContext context, {
+    required String title,
+    required String confirmButtonText,
+    required String declineButtonText,
+  }) {
     return showDialog<int>(
       context: context,
       useRootNavigator: false,
-      builder: (_) => CreateIntervalDialog(title: title),
+      builder: (_) => CreateIntervalDialog(
+        title: title,
+        confirmButtonText: confirmButtonText,
+        declineButtonText: declineButtonText,
+      ),
     );
   }
 
@@ -73,16 +86,16 @@ class _CreateIntervalDialogState extends State<CreateIntervalDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, null),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(color: AppColors.pink, fontSize: 16),
+          child: Text(
+            widget.declineButtonText,
+            style: const TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, activeIndex + 1),
-          child: const Text(
-            'Save',
-            style: TextStyle(color: AppColors.pink, fontSize: 16),
+          child: Text(
+            widget.confirmButtonText,
+            style: const TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
       ],

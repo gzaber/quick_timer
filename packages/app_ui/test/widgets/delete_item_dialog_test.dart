@@ -13,11 +13,24 @@ void main() {
       navigator = MockNavigator();
     });
 
+    buildDeleteItemDialog() => const DeleteItemDialog(
+          title: 'Delete',
+          contentText: 'Delete item?',
+          confirmButtonText: 'OK',
+          declineButtonText: 'Cancel',
+        );
+
     testWidgets('show method works', (tester) async {
       await tester.pumpTest(
         builder: (context) => IconButton(
           onPressed: () {
-            DeleteItemDialog.show(context, itemName: 'itemName');
+            DeleteItemDialog.show(
+              context,
+              title: 'Delete',
+              contentText: 'Delete item?',
+              confirmButtonText: 'OK',
+              declineButtonText: 'Cancel',
+            );
           },
           icon: const Icon(Icons.delete),
         ),
@@ -30,23 +43,20 @@ void main() {
     });
 
     testWidgets('renders dialog', (tester) async {
-      await tester.pumpTest(
-          builder: (_) => const DeleteItemDialog(itemName: 'itemName'));
+      await tester.pumpTest(builder: (_) => buildDeleteItemDialog());
 
       expect(find.byType(DeleteItemDialog), findsOneWidget);
     });
 
     testWidgets('renders correct text', (tester) async {
-      await tester.pumpTest(
-          builder: (_) => const DeleteItemDialog(itemName: 'itemName'));
+      await tester.pumpTest(builder: (_) => buildDeleteItemDialog());
 
       expect(find.text('Delete'), findsOneWidget);
-      expect(find.text('Delete itemName?'), findsOneWidget);
+      expect(find.text('Delete item?'), findsOneWidget);
     });
 
     testWidgets('renders correct buttons', (tester) async {
-      await tester.pumpTest(
-          builder: (_) => const DeleteItemDialog(itemName: 'itemName'));
+      await tester.pumpTest(builder: (_) => buildDeleteItemDialog());
 
       expect(find.byType(TextButton), findsNWidgets(2));
       expect(
@@ -64,7 +74,7 @@ void main() {
       await tester.pumpTest(builder: (_) {
         return MockNavigatorProvider(
           navigator: navigator,
-          child: const DeleteItemDialog(itemName: 'itemName'),
+          child: buildDeleteItemDialog(),
         );
       });
 
@@ -77,7 +87,7 @@ void main() {
       await tester.pumpTest(builder: (_) {
         return MockNavigatorProvider(
           navigator: navigator,
-          child: const DeleteItemDialog(itemName: 'itemName'),
+          child: buildDeleteItemDialog(),
         );
       });
 
