@@ -13,11 +13,24 @@ void main() {
       navigator = MockNavigator();
     });
 
+    buildCreateNameDialog() => const CreateNameDialog(
+          title: 'Create name',
+          confirmButtonText: 'Save',
+          declineButtonText: 'Cancel',
+          emptyNameFailureText: 'Name cannot be empty',
+        );
+
     testWidgets('show method works', (tester) async {
       await tester.pumpTest(
         builder: (context) => IconButton(
           onPressed: () {
-            CreateNameDialog.show(context, title: 'Name');
+            CreateNameDialog.show(
+              context,
+              title: 'Create name',
+              confirmButtonText: 'Save',
+              declineButtonText: 'Cancel',
+              emptyNameFailureText: 'Name cannot be empty',
+            );
           },
           icon: const Icon(Icons.create),
         ),
@@ -30,22 +43,19 @@ void main() {
     });
 
     testWidgets('renders dialog', (tester) async {
-      await tester.pumpTest(
-          builder: (_) => const CreateNameDialog(title: 'Name'));
+      await tester.pumpTest(builder: (_) => buildCreateNameDialog());
 
       expect(find.byType(CreateNameDialog), findsOneWidget);
     });
 
     testWidgets('renders correct text', (tester) async {
-      await tester.pumpTest(
-          builder: (_) => const CreateNameDialog(title: 'Name'));
+      await tester.pumpTest(builder: (_) => buildCreateNameDialog());
 
-      expect(find.text('Name'), findsOneWidget);
+      expect(find.text('Create name'), findsOneWidget);
     });
 
     testWidgets('renders correct buttons', (tester) async {
-      await tester.pumpTest(
-          builder: (_) => const CreateNameDialog(title: 'Name'));
+      await tester.pumpTest(builder: (_) => buildCreateNameDialog());
 
       expect(find.byType(TextButton), findsNWidgets(2));
       expect(
@@ -64,7 +74,7 @@ void main() {
       await tester.pumpTest(builder: (_) {
         return MockNavigatorProvider(
           navigator: navigator,
-          child: const CreateNameDialog(title: 'Name'),
+          child: buildCreateNameDialog(),
         );
       });
 
@@ -78,7 +88,7 @@ void main() {
       await tester.pumpTest(builder: (_) {
         return MockNavigatorProvider(
           navigator: navigator,
-          child: const CreateNameDialog(title: 'Name'),
+          child: buildCreateNameDialog(),
         );
       });
 
@@ -92,7 +102,7 @@ void main() {
       await tester.pumpTest(builder: (_) {
         return MockNavigatorProvider(
           navigator: navigator,
-          child: const CreateNameDialog(title: 'Name'),
+          child: buildCreateNameDialog(),
         );
       });
 

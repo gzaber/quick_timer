@@ -14,10 +14,13 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.1
+  flutter_localizations:
+    sdk: flutter
   get_it: ^7.2.0
   hive_flutter: ^1.1.0
   hive_timers_api:
     path: packages/hive_timers_api
+  intl: ^0.17.0
   timers_repository:
     path: packages/timers_repository
 
@@ -30,6 +33,7 @@ dev_dependencies:
   mockingjay: ^0.3.0
 
 flutter:
+  generate: true
   uses-material-design: true
   assets:
     - assets/

@@ -5,45 +5,62 @@ import '../colors/colors.dart';
 class DeleteItemDialog extends StatelessWidget {
   const DeleteItemDialog({
     Key? key,
-    required this.itemName,
+    required this.title,
+    required this.contentText,
+    required this.confirmButtonText,
+    required this.declineButtonText,
   }) : super(key: key);
 
-  final String itemName;
+  final String title;
+  final String contentText;
+  final String confirmButtonText;
+  final String declineButtonText;
 
-  static Future<bool?> show(BuildContext context, {required String itemName}) {
+  static Future<bool?> show(
+    BuildContext context, {
+    required String title,
+    required String contentText,
+    required String confirmButtonText,
+    required String declineButtonText,
+  }) {
     return showDialog<bool>(
       context: context,
       useRootNavigator: false,
-      builder: (_) => DeleteItemDialog(itemName: itemName),
+      builder: (_) => DeleteItemDialog(
+        title: title,
+        contentText: contentText,
+        confirmButtonText: confirmButtonText,
+        declineButtonText: declineButtonText,
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text(
-        'Delete',
-        style: TextStyle(color: Colors.white),
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.white),
       ),
       backgroundColor: AppColors.lightBlue,
       content: Text(
-        'Delete $itemName?',
+        contentText,
         style: const TextStyle(color: Colors.white),
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context, false),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(color: AppColors.pink, fontSize: 16),
+          child: Text(
+            declineButtonText,
+            style: const TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
         TextButton(
           onPressed: () => Navigator.pop(context, true),
-          child: const Text(
-            'OK',
-            style: TextStyle(color: AppColors.pink, fontSize: 16),
+          child: Text(
+            confirmButtonText,
+            style: const TextStyle(color: AppColors.pink, fontSize: 16),
           ),
         ),
       ],

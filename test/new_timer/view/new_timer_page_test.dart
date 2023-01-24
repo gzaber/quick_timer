@@ -1,6 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart' hide Interval;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations_en.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockingjay/mockingjay.dart';
 import 'package:quick_timer/new_timer/new_timer.dart';
@@ -19,6 +21,7 @@ extension WidgetTesterX on WidgetTester {
                   navigator: navigator,
                   child: const NewTimerView(),
                 ),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
         ),
       ),
     );
@@ -68,6 +71,7 @@ void main() {
                 ),
               ),
             ),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
           ),
         ),
       );
@@ -83,6 +87,7 @@ void main() {
           value: timersRepository,
           child: const MaterialApp(
             home: NewTimerPage(),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
           ),
         ),
       );
@@ -94,6 +99,7 @@ void main() {
   });
 
   group('NewTimerView', () {
+    final l10n = AppLocalizationsEn();
     late NewTimerBloc newTimerBloc;
 
     setUp(() {
@@ -111,7 +117,8 @@ void main() {
 
       expect(
         find.descendant(
-            of: find.byType(AppBar), matching: find.text('New timer')),
+            of: find.byType(AppBar),
+            matching: find.text(l10n.newTimerAppBarTitle)),
         findsOneWidget,
       );
       expect(
@@ -127,8 +134,8 @@ void main() {
 
       await tester.pumpApp(newTimerBloc: newTimerBloc);
 
-      expect(find.text('Select time'), findsOneWidget);
-      expect(find.text('Name'), findsOneWidget);
+      expect(find.text(l10n.newTimerIntervalsHeader), findsOneWidget);
+      expect(find.text(l10n.newTimerNamesHeader), findsOneWidget);
     });
 
     testWidgets('renders FloatingActionButton with text', (tester) async {
@@ -139,7 +146,7 @@ void main() {
       expect(
         find.descendant(
             of: find.byType(FloatingActionButton),
-            matching: find.text('Add to timer')),
+            matching: find.text(l10n.newTimerAddTimerButtonText)),
         findsOneWidget,
       );
     });
@@ -284,7 +291,7 @@ void main() {
       expect(
           find.descendant(
               of: find.byType(SnackBar),
-              matching: find.text('Something went wrong')),
+              matching: find.text(l10n.newTimerFailureMessage)),
           findsOneWidget);
     });
 
@@ -306,7 +313,7 @@ void main() {
       expect(
           find.descendant(
               of: find.byType(SnackBar),
-              matching: find.text('Something went wrong')),
+              matching: find.text(l10n.newTimerFailureMessage)),
           findsOneWidget);
     });
 
@@ -435,7 +442,7 @@ void main() {
       expect(
           find.descendant(
               of: find.byType(SnackBar),
-              matching: find.text('Something went wrong')),
+              matching: find.text(l10n.newTimerFailureMessage)),
           findsOneWidget);
     });
 
@@ -458,7 +465,7 @@ void main() {
       expect(
           find.descendant(
               of: find.byType(SnackBar),
-              matching: find.text('Both interval and name should be selected')),
+              matching: find.text(l10n.newTimerUnselectedFailureMessage)),
           findsOneWidget);
     });
 

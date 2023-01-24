@@ -13,11 +13,22 @@ void main() {
       navigator = MockNavigator();
     });
 
+    buildCreateIntervalDialog() => const CreateIntervalDialog(
+          title: 'Select minutes',
+          confirmButtonText: 'Save',
+          declineButtonText: 'Cancel',
+        );
+
     testWidgets('show method works', (tester) async {
       await tester.pumpTest(
         builder: (context) => IconButton(
           onPressed: () {
-            CreateIntervalDialog.show(context, title: 'Interval');
+            CreateIntervalDialog.show(
+              context,
+              title: 'Select minutes',
+              confirmButtonText: 'Save',
+              declineButtonText: 'Cancel',
+            );
           },
           icon: const Icon(Icons.create),
         ),
@@ -30,22 +41,19 @@ void main() {
     });
 
     testWidgets('renders dialog', (tester) async {
-      await tester.pumpTest(
-          builder: (_) => const CreateIntervalDialog(title: 'Interval'));
+      await tester.pumpTest(builder: (_) => buildCreateIntervalDialog());
 
       expect(find.byType(CreateIntervalDialog), findsOneWidget);
     });
 
     testWidgets('renders correct text', (tester) async {
-      await tester.pumpTest(
-          builder: (_) => const CreateIntervalDialog(title: 'Interval'));
+      await tester.pumpTest(builder: (_) => buildCreateIntervalDialog());
 
-      expect(find.text('Interval'), findsOneWidget);
+      expect(find.text('Select minutes'), findsOneWidget);
     });
 
     testWidgets('renders correct buttons', (tester) async {
-      await tester.pumpTest(
-          builder: (_) => const CreateIntervalDialog(title: 'Interval'));
+      await tester.pumpTest(builder: (_) => buildCreateIntervalDialog());
 
       expect(find.byType(TextButton), findsNWidgets(2));
       expect(
@@ -64,7 +72,7 @@ void main() {
       await tester.pumpTest(builder: (_) {
         return MockNavigatorProvider(
           navigator: navigator,
-          child: const CreateIntervalDialog(title: 'Interval'),
+          child: buildCreateIntervalDialog(),
         );
       });
 
@@ -78,7 +86,7 @@ void main() {
       await tester.pumpTest(builder: (_) {
         return MockNavigatorProvider(
           navigator: navigator,
-          child: const CreateIntervalDialog(title: 'Interval'),
+          child: buildCreateIntervalDialog(),
         );
       });
 

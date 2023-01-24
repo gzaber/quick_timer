@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:timers_repository/timers_repository.dart' as repo;
 
 import '../new_timer.dart';
@@ -35,6 +36,8 @@ class NewTimerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocListener<NewTimerBloc, NewTimerState>(
       listener: (context, state) {
         if (state.creationStatus == CreationStatus.success) {
@@ -43,8 +46,8 @@ class NewTimerView extends StatelessWidget {
         if (state.creationStatus == CreationStatus.unselected) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
-            ..showSnackBar(const SnackBar(
-                content: Text('Both interval and name should be selected')));
+            ..showSnackBar(
+                SnackBar(content: Text(l10n.newTimerUnselectedFailureMessage)));
         }
         if (state.intervalsStatus == IntervalsStatus.failure ||
             state.namesStatus == NamesStatus.failure ||
@@ -52,12 +55,12 @@ class NewTimerView extends StatelessWidget {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
-                const SnackBar(content: Text('Something went wrong')));
+                SnackBar(content: Text(l10n.newTimerFailureMessage)));
         }
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('New timer'),
+          title: Text(l10n.newTimerAppBarTitle),
           toolbarHeight: 107,
           leading: IconButton(
             onPressed: () => Navigator.pop(context),
@@ -70,11 +73,17 @@ class NewTimerView extends StatelessWidget {
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: const [
-              HeaderText(title: 'Select time', leftPadding: 15),
-              _Intervals(),
-              HeaderText(title: 'Name', leftPadding: 15),
-              _Names(),
+            children: [
+              HeaderText(
+                title: l10n.newTimerIntervalsHeader,
+                leftPadding: 15,
+              ),
+              const _Intervals(),
+              HeaderText(
+                title: l10n.newTimerNamesHeader,
+                leftPadding: 15,
+              ),
+              const _Names(),
             ],
           ),
         ),
@@ -128,6 +137,7 @@ class _IntervalItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final selectedInterval =
         context.select((NewTimerBloc bloc) => bloc.state.selectedInterval);
 
@@ -138,7 +148,13 @@ class _IntervalItem extends StatelessWidget {
             .add(NewTimerIntervalSelected(interval: interval));
       },
       onLongPress: () {
-        DeleteItemDialog.show(context, itemName: 'interval').then((value) {
+        DeleteItemDialog.show(
+          context,
+          title: l10n.deleteItemDialogTitle,
+          contentText: l10n.deleteItemDialogIntervalContent,
+          confirmButtonText: l10n.dialogOkButtonText,
+          declineButtonText: l10n.dialogCancelButtonText,
+        ).then((value) {
           if (value == true) {
             context.read<NewTimerBloc>()
               ..add(NewTimerIntervalDeleted(interval: interval))
@@ -218,13 +234,20 @@ class _CreateIntervalButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Column(
       children: [
         const SizedBox(height: 15),
         IconButton(
           key: const Key('newTimerPageCreateIntervalIconButtonKey'),
           onPressed: () {
-            CreateIntervalDialog.show(context, title: 'Select minutes').then(
+            CreateIntervalDialog.show(
+              context,
+              title: l10n.createIntervalDialogTitle,
+              confirmButtonText: l10n.dialogSaveButtonText,
+              declineButtonText: l10n.dialogCancelButtonText,
+            ).then(
               (value) {
                 if (value != null) {
                   context.read<NewTimerBloc>()
@@ -290,6 +313,7 @@ class _NameItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final selectedName =
         context.select((NewTimerBloc bloc) => bloc.state.selectedName);
 
@@ -298,7 +322,13 @@ class _NameItem extends StatelessWidget {
         context.read<NewTimerBloc>().add(NewTimerNameSelected(name: name));
       },
       onLongPress: () {
-        DeleteItemDialog.show(context, itemName: 'name').then((value) {
+        DeleteItemDialog.show(
+          context,
+          title: l10n.deleteItemDialogTitle,
+          contentText: l10n.deleteItemDialogNameContent,
+          confirmButtonText: l10n.dialogOkButtonText,
+          declineButtonText: l10n.dialogCancelButtonText,
+        ).then((value) {
           if (value == true) {
             context.read<NewTimerBloc>()
               ..add(NewTimerNameDeleted(name: name))
@@ -329,12 +359,20 @@ class _CreateNameButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return SizedBox(
       height: 42,
       child: IconButton(
         key: const Key('newTimerPageCreateNameIconButtonKey'),
         onPressed: () {
-          CreateNameDialog.show(context, title: 'Create name').then(
+          CreateNameDialog.show(
+            context,
+            title: l10n.createNameDialogTitle,
+            confirmButtonText: l10n.dialogSaveButtonText,
+            declineButtonText: l10n.dialogCancelButtonText,
+            emptyNameFailureText: l10n.createNameDialogEmptyNameFailure,
+          ).then(
             (value) {
               if (value != null) {
                 context.read<NewTimerBloc>()
@@ -360,6 +398,8 @@ class _CustomFloatingActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return BlocBuilder<NewTimerBloc, NewTimerState>(
       builder: (context, state) {
         return FloatingActionButton.extended(
@@ -371,9 +411,9 @@ class _CustomFloatingActionButton extends StatelessWidget {
             child: Center(
               child: state.creationStatus == CreationStatus.loading
                   ? const CircularProgressIndicator()
-                  : const Text(
-                      'Add to timer',
-                      style: TextStyle(fontSize: 16),
+                  : Text(
+                      l10n.newTimerAddTimerButtonText,
+                      style: const TextStyle(fontSize: 16),
                     ),
             ),
           ),
