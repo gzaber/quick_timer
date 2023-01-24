@@ -1,6 +1,12 @@
 name: main
 
-on: [pull_request, push]
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
 
 jobs:
   flutter_tests:
