@@ -62,8 +62,8 @@ Run the tests using your IDE or using the following command:
 $ flutter test --coverage
 ```
 
-For local Flutter packages run above command in package root directory.  
-For local Dart packages run the following commands in package root directory:
+For local Flutter packages run the above command in the package root directory.  
+For local Dart packages run the following commands in the package root directory:
 
 ```
 $ dart pub global activate coverage
